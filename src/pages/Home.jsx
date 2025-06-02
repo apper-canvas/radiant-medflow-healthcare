@@ -58,6 +58,14 @@ const Home = () => {
   // Handle quick action button clicks
   const handleQuickAction = (actionName) => {
     switch (actionName) {
+      case 'Add Patient':
+        navigate('/patient-management')
+        toast.success('Navigating to Patient Management')
+        break
+      case 'Schedule':
+        navigate('/appointments')
+        toast.success('Navigating to Appointments')
+break
       case 'Emergency':
         navigate('/emergency')
         toast.warning('Opening Emergency Management System')
@@ -132,6 +140,35 @@ case 'Reports':
             
             {/* Navigation Buttons */}
             <nav className="hidden lg:flex items-center space-x-2">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/patient-management')}
+                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium transition-all duration-200"
+              >
+                <ApperIcon name="Users" className="w-4 h-4" />
+                <span className="text-sm">Patients</span>
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/appointments')}
+                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-secondary-700 font-medium transition-all duration-200"
+              >
+                <ApperIcon name="Calendar" className="w-4 h-4" />
+                <span className="text-sm">Appointments</span>
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/billing')}
+                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-700 font-medium transition-all duration-200"
+              >
+                <ApperIcon name="CreditCard" className="w-4 h-4" />
+                <span className="text-sm">Billing</span>
+              </motion.button>
             </nav>
             
             <div className="flex items-center space-x-2 sm:space-x-4">
@@ -262,15 +299,17 @@ case 'Reports':
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="mt-8 medical-card"
->
+        >
           <h3 className="text-lg sm:text-xl font-bold text-surface-900 mb-6">Quick Actions</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
             {[
+              { name: 'Add Patient', icon: 'UserPlus', color: 'primary' },
+              { name: 'Schedule', icon: 'CalendarPlus', color: 'secondary' },
               { name: 'Emergency', icon: 'AlertCircle', color: 'red' },
               { name: 'Lab Results', icon: 'FileText', color: 'purple' },
               { name: 'Pharmacy', icon: 'Pill', color: 'orange' },
               { name: 'Reports', icon: 'BarChart3', color: 'blue' }
-            ].map((action) => (
+].map((action, index) => (
               <motion.button
                 key={action.name}
                 whileHover={{ scale: 1.05 }}
