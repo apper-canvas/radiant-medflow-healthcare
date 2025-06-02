@@ -6,6 +6,8 @@ import NotFound from './pages/NotFound'
 import PatientManagement from './pages/PatientManagement'
 import Appointments from './pages/Appointments'
 import Billing from './pages/Billing'
+import Emergency from './pages/Emergency'
+
 function App() {
   return (
     <div>
