@@ -2,13 +2,10 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
-import { useSelector, useDispatch } from 'react-redux'
 import ApperIcon from '../components/ApperIcon'
 
 const PatientManagement = () => {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  
   // State for UI management
   const [activeTab, setActiveTab] = useState('view')
   const [searchTerm, setSearchTerm] = useState('')
