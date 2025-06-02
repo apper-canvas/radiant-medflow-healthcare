@@ -65,9 +65,10 @@ const Home = () => {
       case 'Schedule':
         navigate('/appointments')
         toast.success('Navigating to Appointments')
-        break
+break
       case 'Emergency':
-        toast.error('Emergency protocol activated! Alert sent to on-call staff.')
+        navigate('/emergency')
+        toast.warning('Opening Emergency Management System')
         break
       case 'Lab Results':
         toast.info('Lab Results system accessed. Checking for pending results...')

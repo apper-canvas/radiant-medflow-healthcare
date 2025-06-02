@@ -8,12 +8,13 @@ import Appointments from './pages/Appointments'
 import Billing from './pages/Billing'
 function App() {
   return (
-<div className="App min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/20 to-secondary-50/20">
+    <div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/patient-management" element={<PatientManagement />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/billing" element={<Billing />} />
+        <Route path="/emergency" element={<Emergency />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer
