@@ -145,9 +145,9 @@ const Appointments = () => {
               </button>
 </div>
             
-            <button 
+<button 
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 text-surface-700 font-medium transition-all duration-200"
+              className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 text-black font-medium transition-all duration-200"
             >
               <ApperIcon name="Home" className="w-4 h-4" />
               <span className="text-sm">Dashboard</span>
@@ -174,9 +174,9 @@ const Appointments = () => {
             </div>
           </div>
           
-          <button
+<button
             onClick={() => setShowForm(!showForm)}
-            className="medical-button-primary"
+            className="medical-button-primary text-black"
           >
             <ApperIcon name="Plus" className="w-5 h-5 mr-2" />
             Schedule Appointment
@@ -302,16 +302,16 @@ const Appointments = () => {
                 />
               </div>
               <div className="flex justify-end space-x-4">
-                <button
+<button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-6 py-3 rounded-xl border-2 border-surface-300 text-surface-700 font-medium hover:bg-surface-50 transition-colors"
+                  className="px-6 py-3 rounded-xl border-2 border-surface-300 text-black font-medium hover:bg-surface-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="medical-button-primary"
+                  className="medical-button-primary text-black"
                 >
                   Schedule Appointment
                 </button>
@@ -364,10 +364,10 @@ const Appointments = () => {
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-2">
-                        {appointment.status === 'pending' && (
+{appointment.status === 'pending' && (
                           <button
                             onClick={() => updateAppointmentStatus(appointment.id, 'confirmed')}
-                            className="p-2 text-secondary-600 hover:bg-secondary-100 rounded-lg transition-colors"
+                            className="p-2 text-black hover:bg-secondary-100 rounded-lg transition-colors"
                             title="Confirm appointment"
                           >
                             <ApperIcon name="Check" className="w-4 h-4" />
@@ -376,7 +376,7 @@ const Appointments = () => {
                         {appointment.status === 'confirmed' && (
                           <button
                             onClick={() => updateAppointmentStatus(appointment.id, 'completed')}
-                            className="p-2 text-primary-600 hover:bg-primary-100 rounded-lg transition-colors"
+                            className="p-2 text-black hover:bg-primary-100 rounded-lg transition-colors"
                             title="Mark as completed"
                           >
                             <ApperIcon name="CheckCircle" className="w-4 h-4" />
@@ -384,10 +384,10 @@ const Appointments = () => {
                         )}
                         <button
                           onClick={() => deleteAppointment(appointment.id)}
-                          className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                          className="p-2 text-black hover:bg-red-100 rounded-lg transition-colors"
                           title="Cancel appointment"
                         >
-<ApperIcon name="X" className="w-4 h-4" />
+                          <ApperIcon name="X" className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
