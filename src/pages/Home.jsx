@@ -281,18 +281,17 @@ const [recentActivities, setRecentActivities] = useState([])
                     className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-surface-200 z-50 max-h-96 overflow-y-auto"
                   >
                     {/* Dropdown Header */}
-                    <div className="flex items-center justify-between p-4 border-b border-surface-200">
+<div className="flex items-center justify-between p-4 border-b border-surface-200">
                       <h3 className="font-semibold text-surface-900">Notifications</h3>
                       {unreadCount > 0 && (
                         <button
                           onClick={markAllAsRead}
-                          className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                          className="text-sm text-black hover:text-gray-800 font-medium"
                         >
                           Mark all read
                         </button>
                       )}
                     </div>
-
                     {/* Notification List */}
                     <div className="max-h-64 overflow-y-auto">
                       {notifications.length === 0 ? (
@@ -349,13 +348,13 @@ const [recentActivities, setRecentActivities] = useState([])
                     </div>
 
                     {/* Dropdown Footer */}
-                    <div className="p-3 border-t border-surface-200">
+<div className="p-3 border-t border-surface-200">
                       <button 
                         onClick={() => {
                           setShowNotifications(false)
                           toast.info('View all notifications functionality coming soon')
                         }}
-                        className="w-full text-center text-sm text-primary-600 hover:text-primary-700 font-medium"
+                        className="w-full text-center text-sm text-black hover:text-gray-800 font-medium"
                       >
                         View all notifications
                       </button>
@@ -396,13 +395,12 @@ const [recentActivities, setRecentActivities] = useState([])
             transition={{ delay: 0.3 }}
             className="medical-card"
           >
-            <div className="flex items-center justify-between mb-6">
+<div className="flex items-center justify-between mb-6">
               <h3 className="text-lg sm:text-xl font-bold text-surface-900">Recent Activities</h3>
-              <button className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+              <button className="text-black hover:text-gray-800 text-sm font-medium">
                 View All
               </button>
             </div>
-            
             <div className="space-y-4">
               {recentActivities.map((activity, index) => (
                 <motion.div
