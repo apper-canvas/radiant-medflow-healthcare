@@ -8,6 +8,7 @@ import Appointments from './pages/Appointments'
 import Billing from './pages/Billing'
 import Emergency from './pages/Emergency'
 import LabResults from './pages/LabResults'
+import Pharmacy from './pages/Pharmacy'
 
 function App() {
   return (
