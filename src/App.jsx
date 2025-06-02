@@ -5,9 +5,12 @@ import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 function App() {
   return (
-    <div className="App min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/20 to-secondary-50/20">
+<div className="App min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/20 to-secondary-50/20">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/patient-management" element={<PatientManagement />} />
+        <Route path="/appointments" element={<Appointments />} />
+        <Route path="/billing" element={<Billing />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer
