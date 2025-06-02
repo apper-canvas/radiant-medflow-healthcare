@@ -517,51 +517,9 @@ const navigate = useNavigate()
                   )}
                 </motion.div>
               ))}
-            </div>
+</div>
           </motion.section>
         </div>
-
-        {/* Quick Actions */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 medical-card"
-        >
-          <h3 className="text-lg sm:text-xl font-bold text-surface-900 mb-6">Quick Actions</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-            {[
-              { name: 'Add Patient', icon: 'UserPlus', color: 'primary' },
-              { name: 'Schedule', icon: 'CalendarPlus', color: 'secondary' },
-              { name: 'Emergency', icon: 'AlertCircle', color: 'red' },
-              { name: 'Lab Results', icon: 'FileText', color: 'purple' },
-              { name: 'Pharmacy', icon: 'Pill', color: 'orange' },
-              { name: 'Reports', icon: 'BarChart3', color: 'blue' }
-].map((action, index) => (
-              <motion.button
-                key={action.name}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleQuickAction(action.name)}
-                className="flex flex-col items-center p-3 sm:p-4 rounded-xl bg-surface-50 hover:bg-surface-100 transition-all duration-200 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
-              >
-                <div className={`p-2 sm:p-3 rounded-xl mb-2 transition-colors group-hover:scale-110 ${
-                  action.color === 'primary' ? 'bg-primary-100 text-primary-600 group-hover:bg-primary-200' :
-                  action.color === 'secondary' ? 'bg-secondary-100 text-secondary-600 group-hover:bg-secondary-200' :
-                  action.color === 'red' ? 'bg-red-100 text-red-600 group-hover:bg-red-200' :
-                  action.color === 'purple' ? 'bg-purple-100 text-purple-600 group-hover:bg-purple-200' :
-                  action.color === 'orange' ? 'bg-orange-100 text-orange-600 group-hover:bg-orange-200' :
-                  'bg-blue-100 text-blue-600 group-hover:bg-blue-200'
-                }`}>
-                  <ApperIcon name={action.icon} className="w-5 h-5 sm:w-6 sm:h-6" />
-                </div>
-                <span className="text-xs sm:text-sm font-medium text-surface-700 text-center">
-                  {action.name}
-                </span>
-              </motion.button>
-            ))}
-          </div>
-        </motion.section>
       </main>
     </div>
   )
