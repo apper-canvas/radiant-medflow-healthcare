@@ -118,111 +118,8 @@ case 'Reports':
     }
   ]
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/30 to-secondary-50/30">
-      {/* Header */}
-      <motion.header 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white/80 backdrop-blur-sm border-b border-surface-200 sticky top-0 z-50"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl">
-                <ApperIcon name="Stethoscope" className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gradient">MedFlow</h1>
-                <p className="text-xs sm:text-sm text-surface-600 hidden sm:block">Healthcare Management Platform</p>
-              </div>
-</div>
-            
-            {/* Navigation Buttons */}
-{/* Tab Navigation */}
-            <nav className="hidden lg:flex tab-navigation">
-              <div 
-                onClick={() => navigate('/patient-management')}
-                className={`tab-item ${window.location.pathname === '/patient-management' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="Users" className="tab-icon" />
-                <span className="tab-label">Patients</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/appointments')}
-                className={`tab-item ${window.location.pathname === '/appointments' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="Calendar" className="tab-icon" />
-                <span className="tab-label">Appointments</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/billing')}
-                className={`tab-item ${window.location.pathname === '/billing' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="CreditCard" className="tab-icon" />
-                <span className="tab-label">Billing</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/emergency')}
-                className={`tab-item ${window.location.pathname === '/emergency' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="AlertCircle" className="tab-icon" />
-                <span className="tab-label">Emergency</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/lab-results')}
-                className={`tab-item ${window.location.pathname === '/lab-results' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="FileText" className="tab-icon" />
-                <span className="tab-label">Lab Results</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/pharmacy')}
-                className={`tab-item ${window.location.pathname === '/pharmacy' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="Pill" className="tab-icon" />
-                <span className="tab-label">Pharmacy</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/reports')}
-                className={`tab-item ${window.location.pathname === '/reports' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="BarChart3" className="tab-icon" />
-                <span className="tab-label">Reports</span>
-              </div>
-            </nav>
-            
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-surface-900">
-                  {currentTime.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </p>
-                <p className="text-sm text-surface-600">
-                  {currentTime.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                  })}
-                </p>
-              </div>
-              <button className="p-2 sm:p-3 rounded-xl bg-surface-100 hover:bg-surface-200 transition-colors">
-                <ApperIcon name="Bell" className="w-5 h-5 sm:w-6 sm:h-6 text-surface-700" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.header>
-
+return (
+    <div>
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Quick Stats */}
@@ -359,7 +256,7 @@ case 'Reports':
                 </span>
               </motion.button>
             ))}
-          </div>
+</div>
         </motion.section>
       </main>
     </div>

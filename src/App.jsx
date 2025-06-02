@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Layout from './components/Layout'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import PatientManagement from './pages/PatientManagement'
@@ -13,14 +14,14 @@ import Reports from './pages/Reports'
 
 function App() {
   return (
-    <div>
+    <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/patient-management" element={<PatientManagement />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/billing" element={<Billing />} />
-<Route path="/emergency" element={<Emergency />} />
-<Route path="/lab-results" element={<LabResults />} />
+        <Route path="/emergency" element={<Emergency />} />
+        <Route path="/lab-results" element={<LabResults />} />
         <Route path="/pharmacy" element={<Pharmacy />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="*" element={<NotFound />} />
@@ -40,7 +41,7 @@ function App() {
         toastClassName="bg-white shadow-medical border border-surface-200 rounded-xl"
         progressClassName="bg-gradient-to-r from-primary-500 to-secondary-500"
       />
-    </div>
+    </Layout>
   )
 }
 
