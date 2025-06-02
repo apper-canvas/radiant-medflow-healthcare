@@ -78,8 +78,9 @@ break
         navigate('/pharmacy')
         toast.success('Navigating to Pharmacy Management')
         break
-      case 'Reports':
-        toast.info('Reports system accessed. Generating analytics dashboard...')
+case 'Reports':
+        navigate('/reports')
+        toast.success('Navigating to Reports & Analytics')
         break
       default:
         toast.warning('Feature coming soon!')
