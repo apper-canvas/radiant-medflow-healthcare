@@ -3,7 +3,6 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
-
 function App() {
   return (
     <div className="App min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/20 to-secondary-50/20">
