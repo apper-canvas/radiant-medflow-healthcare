@@ -42,7 +42,16 @@ const navigate = useNavigate()
       color: 'text-secondary-600',
       bgColor: 'bg-secondary-50',
       borderColor: 'border-secondary-200'
-},
+    },
+    {
+      title: 'Available Beds',
+      value: '156',
+      change: '-3%',
+      icon: 'Bed',
+      color: 'text-accent',
+      bgColor: 'bg-amber-50',
+      borderColor: 'border-amber-200'
+    },
     {
       title: 'Staff on Duty',
       value: '342',
@@ -53,6 +62,7 @@ const navigate = useNavigate()
       borderColor: 'border-purple-200'
     }
 ]
+
 // Handle quick action button clicks
   const handleQuickAction = (actionName) => {
     switch (actionName) {
