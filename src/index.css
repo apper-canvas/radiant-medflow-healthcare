@@ -85,10 +85,10 @@
   
   .tab-label {
     @apply text-sm font-medium;
-  }
+}
 /* Sidebar Navigation Components */
   .sidebar-item {
-    @apply w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 hover:bg-surface-50 relative group;
+    @apply w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200 hover:bg-surface-50 relative;
   }
   
   .sidebar-item-active {
