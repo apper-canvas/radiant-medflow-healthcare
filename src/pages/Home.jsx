@@ -137,64 +137,89 @@ case 'Reports':
                 <p className="text-xs sm:text-sm text-surface-600 hidden sm:block">Healthcare Management Platform</p>
               </div>
 </div>
-            
-            {/* Navigation Buttons */}
-{/* Tab Navigation */}
-            <nav className="hidden lg:flex tab-navigation">
+{/* Navigation Buttons */}
+            {/* Reorganized Tab Navigation */}
+            <nav className="hidden lg:flex nav-container">
+              {/* Home */}
               <div 
-                onClick={() => navigate('/patient-management')}
-                className={`tab-item ${window.location.pathname === '/patient-management' ? 'tab-item-active' : ''}`}
+                onClick={() => navigate('/')}
+                className={`nav-item ${window.location.pathname === '/' ? 'nav-item-active' : ''}`}
               >
-                <ApperIcon name="Users" className="tab-icon" />
-                <span className="tab-label">Patients</span>
+                <ApperIcon name="Home" className="nav-icon" />
+                <span className="nav-label">Home</span>
               </div>
               
-              <div 
-                onClick={() => navigate('/appointments')}
-                className={`tab-item ${window.location.pathname === '/appointments' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="Calendar" className="tab-icon" />
-                <span className="tab-label">Appointments</span>
+              {/* Clinical Dropdown */}
+              <div className="nav-dropdown">
+                <div className={`nav-item ${['/patient-management', '/appointments', '/lab-results'].includes(window.location.pathname) ? 'nav-item-active' : ''}`}>
+                  <ApperIcon name="Stethoscope" className="nav-icon" />
+                  <span className="nav-label">Clinical</span>
+                  <ApperIcon name="ChevronDown" className="w-3 h-3 ml-1" />
+                </div>
+                <div className="nav-dropdown-menu">
+                  <div 
+                    onClick={() => navigate('/patient-management')}
+                    className="nav-dropdown-item"
+                  >
+                    <ApperIcon name="Users" className="w-4 h-4" />
+                    <span>Patient Management</span>
+                  </div>
+                  <div 
+                    onClick={() => navigate('/appointments')}
+                    className="nav-dropdown-item"
+                  >
+                    <ApperIcon name="Calendar" className="w-4 h-4" />
+                    <span>Appointments</span>
+                  </div>
+                  <div 
+                    onClick={() => navigate('/lab-results')}
+                    className="nav-dropdown-item"
+                  >
+                    <ApperIcon name="FileText" className="w-4 h-4" />
+                    <span>Lab Results</span>
+                  </div>
+                </div>
               </div>
               
-              <div 
-                onClick={() => navigate('/billing')}
-                className={`tab-item ${window.location.pathname === '/billing' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="CreditCard" className="tab-icon" />
-                <span className="tab-label">Billing</span>
+              {/* Administrative Dropdown */}
+              <div className="nav-dropdown">
+                <div className={`nav-item ${['/billing', '/pharmacy', '/reports'].includes(window.location.pathname) ? 'nav-item-active' : ''}`}>
+                  <ApperIcon name="Building2" className="nav-icon" />
+                  <span className="nav-label">Administrative</span>
+                  <ApperIcon name="ChevronDown" className="w-3 h-3 ml-1" />
+                </div>
+                <div className="nav-dropdown-menu">
+                  <div 
+                    onClick={() => navigate('/billing')}
+                    className="nav-dropdown-item"
+                  >
+                    <ApperIcon name="CreditCard" className="w-4 h-4" />
+                    <span>Billing & Payments</span>
+                  </div>
+                  <div 
+                    onClick={() => navigate('/pharmacy')}
+                    className="nav-dropdown-item"
+                  >
+                    <ApperIcon name="Pill" className="w-4 h-4" />
+                    <span>Pharmacy</span>
+                  </div>
+                  <div 
+                    onClick={() => navigate('/reports')}
+                    className="nav-dropdown-item"
+                  >
+                    <ApperIcon name="BarChart3" className="w-4 h-4" />
+                    <span>Reports & Analytics</span>
+                  </div>
+                </div>
               </div>
               
+              {/* Emergency - Standalone */}
               <div 
                 onClick={() => navigate('/emergency')}
-                className={`tab-item ${window.location.pathname === '/emergency' ? 'tab-item-active' : ''}`}
+                className={`nav-item nav-item-emergency ${window.location.pathname === '/emergency' ? 'nav-item-active' : ''}`}
               >
-                <ApperIcon name="AlertCircle" className="tab-icon" />
-                <span className="tab-label">Emergency</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/lab-results')}
-                className={`tab-item ${window.location.pathname === '/lab-results' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="FileText" className="tab-icon" />
-                <span className="tab-label">Lab Results</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/pharmacy')}
-                className={`tab-item ${window.location.pathname === '/pharmacy' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="Pill" className="tab-icon" />
-                <span className="tab-label">Pharmacy</span>
-              </div>
-              
-              <div 
-                onClick={() => navigate('/reports')}
-                className={`tab-item ${window.location.pathname === '/reports' ? 'tab-item-active' : ''}`}
-              >
-                <ApperIcon name="BarChart3" className="tab-icon" />
-                <span className="tab-label">Reports</span>
+                <ApperIcon name="AlertCircle" className="nav-icon" />
+                <span className="nav-label">Emergency</span>
               </div>
             </nav>
             

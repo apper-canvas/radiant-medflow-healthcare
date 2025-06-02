@@ -60,31 +60,60 @@
   .department-card::before {
     content: '';
     @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-secondary-500;
+}
+  
+  /* Navigation Components */
+  .nav-container {
+    @apply flex items-center space-x-6 bg-white/90 backdrop-blur-sm;
   }
   
-  /* Tab Navigation Components */
-  .tab-navigation {
-    @apply flex items-center space-x-8 border-b border-surface-200 bg-white/90 backdrop-blur-sm;
+  .nav-item {
+    @apply flex items-center space-x-2 px-4 py-3 font-medium text-surface-600 border-b-2 border-transparent transition-all duration-200 hover:text-surface-800 hover:border-surface-300 cursor-pointer relative;
   }
   
-  .tab-item {
-    @apply flex items-center space-x-2 px-4 py-3 font-medium text-surface-600 border-b-2 border-transparent transition-all duration-200 hover:text-surface-800 hover:border-surface-300 cursor-pointer;
-  }
-  
-  .tab-item-active {
+  .nav-item-active {
     @apply text-primary-600 border-primary-500 bg-primary-50/50;
   }
   
-  .tab-item:hover:not(.tab-item-active) {
-    @apply text-surface-800 border-surface-300;
+  .nav-item-emergency {
+    @apply text-medical-red hover:text-red-700 hover:border-red-300;
   }
   
-  .tab-icon {
+  .nav-item-emergency.nav-item-active {
+    @apply text-medical-red border-medical-red bg-red-50/50;
+  }
+  
+  .nav-icon {
     @apply w-4 h-4 transition-colors duration-200;
   }
   
-  .tab-label {
+  .nav-label {
     @apply text-sm font-medium;
+  }
+  
+  /* Dropdown Navigation */
+  .nav-dropdown {
+    @apply relative;
+  }
+  
+  .nav-dropdown-menu {
+    @apply absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-lg border border-surface-200 py-2 opacity-0 invisible transition-all duration-200 z-50;
+  }
+  
+  .nav-dropdown:hover .nav-dropdown-menu {
+    @apply opacity-100 visible;
+  }
+  
+  .nav-dropdown-item {
+    @apply flex items-center space-x-3 px-4 py-3 text-sm text-surface-700 hover:bg-surface-50 hover:text-surface-900 cursor-pointer transition-colors duration-150;
+  }
+  
+  .nav-dropdown-item:first-child {
+    @apply rounded-t-lg;
+  }
+  
+  .nav-dropdown-item:last-child {
+    @apply rounded-b-lg;
   }
 }
 
