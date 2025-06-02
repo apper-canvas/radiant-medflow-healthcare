@@ -7,12 +7,12 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-surface-50">
+<div className="min-h-screen bg-surface-50">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       
       {/* Main Content Area */}
-      <div className="lg:pl-80">
+      <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:pl-80' : 'lg:pl-80'}`}>
         {/* Header */}
         <header className="layout-header">
           <div className="flex items-center justify-between px-4 py-3">

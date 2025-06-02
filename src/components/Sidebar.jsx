@@ -127,12 +127,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             </div>
             <button className="p-1 rounded-lg hover:bg-surface-200 transition-colors">
               <ApperIcon name="Settings" className="w-4 h-4 text-surface-600" />
+<button className="p-1 rounded-lg hover:bg-surface-200 transition-colors">
+              <ApperIcon name="Settings" className="w-4 h-4 text-surface-600" />
             </button>
           </div>
         </div>
       </motion.div>
     </>
-  )
-}
 
 export default Sidebar
