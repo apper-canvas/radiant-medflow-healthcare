@@ -277,12 +277,13 @@ const Home = () => {
               { name: 'Lab Results', icon: 'FileText', color: 'purple' },
               { name: 'Pharmacy', icon: 'Pill', color: 'orange' },
               { name: 'Reports', icon: 'BarChart3', color: 'blue' }
-            ].map((action, index) => (
+].map((action, index) => (
               <motion.button
                 key={action.name}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex flex-col items-center p-3 sm:p-4 rounded-xl bg-surface-50 hover:bg-surface-100 transition-all duration-200 group"
+                onClick={() => handleQuickAction(action.name)}
+                className="flex flex-col items-center p-3 sm:p-4 rounded-xl bg-surface-50 hover:bg-surface-100 transition-all duration-200 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
               >
                 <div className={`p-2 sm:p-3 rounded-xl mb-2 transition-colors group-hover:scale-110 ${
                   action.color === 'primary' ? 'bg-primary-100 text-primary-600 group-hover:bg-primary-200' :
