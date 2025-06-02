@@ -69,9 +69,10 @@ break
       case 'Emergency':
         navigate('/emergency')
         toast.warning('Opening Emergency Management System')
-        break
+break
       case 'Lab Results':
-        toast.info('Lab Results system accessed. Checking for pending results...')
+        navigate('/lab-results')
+        toast.success('Navigating to Lab Results')
         break
       case 'Pharmacy':
         toast.info('Pharmacy system accessed. Checking medication inventory...')
