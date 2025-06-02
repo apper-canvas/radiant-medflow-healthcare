@@ -113,7 +113,42 @@
   }
   
   .nav-dropdown-item:last-child {
-    @apply rounded-b-lg;
+@apply rounded-b-lg;
+  }
+  
+  /* Compact Grid Utilities */
+  .medical-grid-compact {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4;
+  }
+  
+  .medical-grid-2-compact {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
+  }
+  
+  .medical-grid-3-compact {
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4;
+  }
+  
+  /* Compact Card Utilities */
+  .medical-card-compact {
+    @apply bg-white rounded-xl shadow-card border border-surface-200 p-4 transition-all duration-300 hover:shadow-lg hover:border-primary-200;
+  }
+  
+  .medical-card-small {
+    @apply bg-white rounded-lg shadow-sm border border-surface-200 p-3 transition-all duration-200 hover:shadow-md hover:border-primary-200;
+  }
+  
+  /* Standard Grid Utilities (for reference) */
+  .medical-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6;
+  }
+  
+  .medical-grid-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+  }
+  
+  .medical-grid-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
   }
 }
 
