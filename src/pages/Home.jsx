@@ -286,7 +286,7 @@ const [recentActivities, setRecentActivities] = useState([])
                       {unreadCount > 0 && (
                         <button
                           onClick={markAllAsRead}
-                          className="text-sm text-black hover:text-gray-800 font-medium"
+                          className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                         >
                           Mark all read
                         </button>
@@ -354,7 +354,7 @@ const [recentActivities, setRecentActivities] = useState([])
                           setShowNotifications(false)
                           toast.info('View all notifications functionality coming soon')
                         }}
-                        className="w-full text-center text-sm text-black hover:text-gray-800 font-medium"
+                        className="w-full text-center text-sm text-primary-600 hover:text-primary-700 font-medium"
                       >
                         View all notifications
                       </button>
@@ -397,7 +397,7 @@ const [recentActivities, setRecentActivities] = useState([])
           >
 <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg sm:text-xl font-bold text-surface-900">Recent Activities</h3>
-              <button className="text-black hover:text-gray-800 text-sm font-medium">
+              <button className="text-primary-600 hover:text-primary-700 text-sm font-medium">
                 View All
               </button>
             </div>
