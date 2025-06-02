@@ -22,46 +22,7 @@ const navigate = useNavigate()
       setCurrentTime(new Date())
     }, 60000)
     return () => clearInterval(timer)
-  }, [])
-
-  const quickStats = [
-    {
-      title: 'Active Patients',
-      value: '1,247',
-      change: '+12%',
-      icon: 'Users',
-      color: 'text-primary-600',
-      bgColor: 'bg-primary-50',
-      borderColor: 'border-primary-200'
-    },
-    {
-      title: 'Today\'s Appointments',
-      value: '89',
-      change: '+5%',
-      icon: 'Calendar',
-      color: 'text-secondary-600',
-      bgColor: 'bg-secondary-50',
-      borderColor: 'border-secondary-200'
-    },
-    {
-      title: 'Available Beds',
-      value: '156',
-      change: '-3%',
-      icon: 'Bed',
-      color: 'text-accent',
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-200'
-    },
-    {
-      title: 'Staff on Duty',
-      value: '342',
-      change: '+1%',
-      icon: 'UserCheck',
-      color: 'text-medical-purple',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200'
-    }
-]
+}, [])
 
 // Handle quick action button clicks
   const handleQuickAction = (actionName) => {
@@ -424,40 +385,8 @@ const navigate = useNavigate()
         </div>
       </motion.header>
 
-      {/* Main Content */}
+{/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Quick Stats */}
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <h2 className="text-xl sm:text-2xl font-bold text-surface-900 mb-4 sm:mb-6">Dashboard Overview</h2>
-          <div className="medical-grid">
-            {quickStats.map((stat, index) => (
-              <motion.div
-                key={stat.title}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 + index * 0.1 }}
-                className={`medical-card ${stat.bgColor} ${stat.borderColor} border-2 hover:scale-105 transform transition-all duration-300`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`p-2 sm:p-3 rounded-xl ${stat.bgColor} ${stat.borderColor} border`}>
-                    <ApperIcon name={stat.icon} className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color}`} />
-                  </div>
-                  <span className={`text-xs sm:text-sm font-medium ${stat.change.startsWith('+') ? 'text-secondary-600' : 'text-medical-red'}`}>
-                    {stat.change}
-                  </span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-surface-900 mb-1">{stat.value}</h3>
-                <p className="text-sm text-surface-600">{stat.title}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
         {/* Main Feature and Activities Grid */}
         <div className="medical-grid-2 gap-6 sm:gap-8">
           {/* Main Feature */}
