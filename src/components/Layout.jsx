@@ -5,74 +5,59 @@ import ApperIcon from './ApperIcon'
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date())
-
-  // Update time every minute
-  useState(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000)
-    return () => clearInterval(timer)
-  }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/30 to-secondary-50/30 flex">
+    <div className="min-h-screen bg-surface-50">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-
+      
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
+      <div className="lg:pl-80">
+        {/* Header */}
         <header className="layout-header">
-          <div className="flex items-center justify-between h-16 px-4 lg:px-6">
-            {/* Left side - Menu button and breadcrumb */}
+          <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center space-x-4">
+              {/* Mobile Menu Button */}
               <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
+                onClick={() => setSidebarOpen(true)}
                 className="lg:hidden p-2 rounded-lg hover:bg-surface-100 transition-colors"
               >
                 <ApperIcon name="Menu" className="w-6 h-6 text-surface-700" />
               </button>
               
-              {/* Desktop Breadcrumb */}
-              <div className="hidden sm:block">
-                <Breadcrumb />
-              </div>
+              {/* Breadcrumb */}
+              <Breadcrumb />
             </div>
-
-            {/* Right side - Time and notifications */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-surface-900">
-                  {currentTime.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </p>
-                <p className="text-sm text-surface-600">
-                  {currentTime.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                  })}
-                </p>
-              </div>
-              <button className="p-2 rounded-xl bg-surface-100 hover:bg-surface-200 transition-colors relative">
-                <ApperIcon name="Bell" className="w-5 h-5 text-surface-700" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+            
+            {/* Header Actions */}
+            <div className="flex items-center space-x-3">
+              {/* Notifications */}
+              <button className="relative p-2 rounded-lg hover:bg-surface-100 transition-colors">
+                <ApperIcon name="Bell" className="w-6 h-6 text-surface-700" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-medical-red rounded-full"></span>
               </button>
+              
+              {/* Search */}
+              <button className="p-2 rounded-lg hover:bg-surface-100 transition-colors">
+                <ApperIcon name="Search" className="w-6 h-6 text-surface-700" />
+              </button>
+              
+              {/* User Profile */}
+              <div className="flex items-center space-x-2 ml-4">
+                <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">AD</span>
+                </div>
+                <div className="hidden sm:block">
+                  <p className="text-sm font-medium text-surface-900">Admin User</p>
+                  <p className="text-xs text-surface-600">Administrator</p>
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Mobile Breadcrumb */}
-          <div className="sm:hidden px-4 pb-3 border-t border-surface-100">
-            <Breadcrumb />
           </div>
         </header>
-
+        
         {/* Page Content */}
-        <main className="flex-1 overflow-auto">
+        <main className="p-4 lg:p-6">
           {children}
         </main>
       </div>

@@ -4,9 +4,9 @@ import ApperIcon from './ApperIcon'
 const Breadcrumb = () => {
   const location = useLocation()
   
-  const routeNames = {
+  const pathMap = {
     '/': 'Dashboard',
-    '/patient-management': 'Patient Management',
+    '/patient-management': 'Patient Management', 
     '/appointments': 'Appointments',
     '/billing': 'Billing & Invoices',
     '/emergency': 'Emergency',
@@ -15,49 +15,47 @@ const Breadcrumb = () => {
     '/reports': 'Reports'
   }
 
-  const pathSegments = location.pathname.split('/').filter(segment => segment !== '')
-  
-  // Always include home
-  const breadcrumbItems = [
-    { name: 'Dashboard', path: '/', isActive: location.pathname === '/' }
-  ]
-
-  // Add current page if not home
-  if (location.pathname !== '/') {
-    const currentRoute = routeNames[location.pathname]
-    if (currentRoute) {
-      breadcrumbItems.push({
-        name: currentRoute,
-        path: location.pathname,
-        isActive: true
-      })
+  const generateBreadcrumbs = () => {
+    const pathSegments = location.pathname.split('/').filter(segment => segment)
+    const breadcrumbs = [{ name: 'Dashboard', path: '/' }]
+    
+    if (pathSegments.length > 0) {
+      const currentPath = '/' + pathSegments.join('/')
+      const currentName = pathMap[currentPath]
+      
+      if (currentName && currentPath !== '/') {
+        breadcrumbs.push({ name: currentName, path: currentPath })
+      }
     }
+    
+    return breadcrumbs
   }
+
+  const breadcrumbs = generateBreadcrumbs()
 
   return (
     <nav className="breadcrumb-container">
-      <div className="flex items-center space-x-2">
-        <ApperIcon name="Home" className="w-4 h-4 text-surface-500" />
-        {breadcrumbItems.map((item, index) => (
-          <div key={item.path} className="flex items-center space-x-2">
+      <ol className="flex items-center space-x-2">
+        {breadcrumbs.map((breadcrumb, index) => (
+          <li key={breadcrumb.path} className="flex items-center">
             {index > 0 && (
-              <ApperIcon name="ChevronRight" className="w-4 h-4 text-surface-400" />
+              <ApperIcon name="ChevronRight" className="w-4 h-4 text-surface-400 mx-2" />
             )}
-            {item.isActive && index === breadcrumbItems.length - 1 ? (
+            {index === breadcrumbs.length - 1 ? (
               <span className="breadcrumb-current">
-                {item.name}
+                {breadcrumb.name}
               </span>
             ) : (
               <Link
-                to={item.path}
+                to={breadcrumb.path}
                 className="breadcrumb-link"
               >
-                {item.name}
+                {breadcrumb.name}
               </Link>
             )}
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </nav>
   )
 }
