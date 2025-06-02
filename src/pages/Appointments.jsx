@@ -143,40 +143,7 @@ const Appointments = () => {
                   <p className="text-xs sm:text-sm text-surface-600 hidden sm:block">Appointment Management</p>
                 </div>
               </button>
-            </div>
-            
-            {/* Navigation Buttons */}
-            <nav className="hidden lg:flex items-center space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/patient-management')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium transition-all duration-200"
-              >
-                <ApperIcon name="Users" className="w-4 h-4" />
-                <span className="text-sm">Patients</span>
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/appointments')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-secondary-200 text-secondary-700 font-medium transition-all duration-200"
-              >
-                <ApperIcon name="Calendar" className="w-4 h-4" />
-                <span className="text-sm">Appointments</span>
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/billing')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-700 font-medium transition-all duration-200"
-              >
-                <ApperIcon name="CreditCard" className="w-4 h-4" />
-                <span className="text-sm">Billing</span>
-              </motion.button>
-            </nav>
+</div>
             
             <button 
               onClick={() => navigate('/')}
