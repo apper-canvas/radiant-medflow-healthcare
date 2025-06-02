@@ -73,9 +73,10 @@ break
       case 'Lab Results':
         navigate('/lab-results')
         toast.success('Navigating to Lab Results')
-        break
+break
       case 'Pharmacy':
-        toast.info('Pharmacy system accessed. Checking medication inventory...')
+        navigate('/pharmacy')
+        toast.success('Navigating to Pharmacy Management')
         break
       case 'Reports':
         toast.info('Reports system accessed. Generating analytics dashboard...')

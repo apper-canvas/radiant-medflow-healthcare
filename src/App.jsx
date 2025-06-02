@@ -17,8 +17,9 @@ function App() {
         <Route path="/patient-management" element={<PatientManagement />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/billing" element={<Billing />} />
-        <Route path="/emergency" element={<Emergency />} />
+<Route path="/emergency" element={<Emergency />} />
         <Route path="/lab-results" element={<LabResults />} />
+        <Route path="/pharmacy" element={<Pharmacy />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer
