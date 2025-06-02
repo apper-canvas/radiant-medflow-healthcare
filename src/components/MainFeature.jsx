@@ -235,126 +235,184 @@ const departments = [
     })
   }
 
-  return (
-    <div className="medical-card">
-      <h3 className="text-lg sm:text-xl font-bold text-surface-900 mb-6 flex items-center">
-        <ApperIcon name="CalendarPlus" className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-secondary-600" />
-        Schedule Appointment
-      </h3>
-
-      <form onSubmit={handleAppointmentSubmit} className="space-y-4 sm:space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Patient Name *
-            </label>
-            <input
-              type="text"
-              value={appointmentForm.patientName}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, patientName: e.target.value }))}
-              className="medical-input"
-              placeholder="Enter patient name or ID"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Doctor Name *
-            </label>
-            <input
-              type="text"
-              value={appointmentForm.doctorName}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, doctorName: e.target.value }))}
-              className="medical-input"
-              placeholder="Select or enter doctor name"
-              required
-            />
-          </div>
+return (
+    <div className="space-y-6">
+      {/* Quick Actions */}
+      <div className="medical-card">
+        <h3 className="text-lg sm:text-xl font-bold text-surface-900 mb-6 flex items-center">
+          <ApperIcon name="Zap" className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-primary-600" />
+          Quick Actions
+        </h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <motion.a
+            href="/appointments"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl border border-primary-200 hover:from-primary-100 hover:to-primary-200 transition-all duration-200"
+          >
+            <div className="p-2 bg-primary-500 rounded-lg">
+              <ApperIcon name="CalendarPlus" className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-primary-900">Schedule Appointment</h4>
+              <p className="text-sm text-primary-700">Book new appointments</p>
+            </div>
+          </motion.a>
+          
+          <motion.a
+            href="/treatment-tracking"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-secondary-50 to-secondary-100 rounded-xl border border-secondary-200 hover:from-secondary-100 hover:to-secondary-200 transition-all duration-200"
+          >
+            <div className="p-2 bg-secondary-500 rounded-lg">
+              <ApperIcon name="FileText" className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-secondary-900">Treatment Tracking</h4>
+              <p className="text-sm text-secondary-700">Manage diagnoses & treatments</p>
+            </div>
+          </motion.a>
+          
+          <motion.a
+            href="/patient-management"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center space-x-3 p-4 bg-gradient-to-r from-accent/20 to-accent/30 rounded-xl border border-accent/30 hover:from-accent/30 hover:to-accent/40 transition-all duration-200"
+          >
+            <div className="p-2 bg-accent rounded-lg">
+              <ApperIcon name="Users" className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-accent-dark">Patient Management</h4>
+              <p className="text-sm text-accent-dark/80">Register & manage patients</p>
+            </div>
+          </motion.a>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Department
-            </label>
-            <select
-              value={appointmentForm.department}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, department: e.target.value }))}
-              className="medical-select"
-            >
-              <option value="">Select department</option>
-              {departments.map(dept => (
-                <option key={dept} value={dept}>{dept}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Appointment Type
-            </label>
-            <select
-              value={appointmentForm.appointmentType}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, appointmentType: e.target.value }))}
-              className="medical-select"
-            >
-              <option value="">Select type</option>
-              {appointmentTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Date *
-            </label>
-            <input
-              type="date"
-              value={appointmentForm.appointmentDate}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, appointmentDate: e.target.value }))}
-              className="medical-input"
-              min={new Date().toISOString().split('T')[0]}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-surface-700 mb-2">
-              Time *
-            </label>
-            <input
-              type="time"
-              value={appointmentForm.appointmentTime}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, appointmentTime: e.target.value }))}
-              className="medical-input"
-              required
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-surface-700 mb-2">
-            Notes
-          </label>
-          <textarea
-            value={appointmentForm.notes}
-            onChange={(e) => setAppointmentForm(prev => ({ ...prev, notes: e.target.value }))}
-            rows={3}
-            className="medical-input resize-none"
-            placeholder="Additional notes or special requirements..."
-          />
-        </div>
-
-        <motion.button
-          type="submit"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="medical-button-secondary w-full sm:w-auto"
-        >
+      {/* Appointment Scheduling Form */}
+      <div className="medical-card">
+        <h3 className="text-lg sm:text-xl font-bold text-surface-900 mb-6 flex items-center">
+          <ApperIcon name="CalendarPlus" className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-secondary-600" />
           Schedule Appointment
-        </motion.button>
-      </form>
+        </h3>
+
+        <form onSubmit={handleAppointmentSubmit} className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-surface-700 mb-2">
+                Patient Name *
+              </label>
+              <input
+                type="text"
+                value={appointmentForm.patientName}
+                onChange={(e) => setAppointmentForm(prev => ({ ...prev, patientName: e.target.value }))}
+                className="medical-input"
+                placeholder="Enter patient name or ID"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-surface-700 mb-2">
+                Doctor Name *
+              </label>
+              <input
+                type="text"
+                value={appointmentForm.doctorName}
+                onChange={(e) => setAppointmentForm(prev => ({ ...prev, doctorName: e.target.value }))}
+                className="medical-input"
+                placeholder="Select or enter doctor name"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-surface-700 mb-2">
+                Department
+              </label>
+              <select
+                value={appointmentForm.department}
+                onChange={(e) => setAppointmentForm(prev => ({ ...prev, department: e.target.value }))}
+                className="medical-select"
+              >
+                <option value="">Select department</option>
+                {departments.map(dept => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-surface-700 mb-2">
+                Appointment Type
+              </label>
+              <select
+                value={appointmentForm.appointmentType}
+                onChange={(e) => setAppointmentForm(prev => ({ ...prev, appointmentType: e.target.value }))}
+                className="medical-select"
+              >
+                <option value="">Select type</option>
+                {appointmentTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-surface-700 mb-2">
+                Date *
+              </label>
+              <input
+                type="date"
+                value={appointmentForm.appointmentDate}
+                onChange={(e) => setAppointmentForm(prev => ({ ...prev, appointmentDate: e.target.value }))}
+                className="medical-input"
+                min={new Date().toISOString().split('T')[0]}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-surface-700 mb-2">
+                Time *
+              </label>
+              <input
+                type="time"
+                value={appointmentForm.appointmentTime}
+                onChange={(e) => setAppointmentForm(prev => ({ ...prev, appointmentTime: e.target.value }))}
+                className="medical-input"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-surface-700 mb-2">
+              Notes
+            </label>
+            <textarea
+              value={appointmentForm.notes}
+              onChange={(e) => setAppointmentForm(prev => ({ ...prev, notes: e.target.value }))}
+              rows={3}
+              className="medical-input resize-none"
+              placeholder="Additional notes or special requirements..."
+            />
+          </div>
+
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="medical-button-secondary w-full sm:w-auto"
+          >
+            Schedule Appointment
+          </motion.button>
+        </form>
+      </div>
     </div>
   )
 }

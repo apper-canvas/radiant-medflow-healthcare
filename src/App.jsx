@@ -8,9 +8,9 @@ import Appointments from './pages/Appointments'
 import Billing from './pages/Billing'
 import Emergency from './pages/Emergency'
 import LabResults from './pages/LabResults'
+import TreatmentTracking from './pages/TreatmentTracking'
 import Pharmacy from './pages/Pharmacy'
 import Reports from './pages/Reports'
-
 function App() {
   return (
     <div>
