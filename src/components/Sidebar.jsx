@@ -121,13 +121,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">AD</span>
             </div>
-            <div className="flex-1 min-w-0">
+<div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-surface-900 truncate">Admin User</p>
               <p className="text-xs text-surface-600 truncate">admin@medflow.com</p>
             </div>
             <button className="p-1 rounded-lg hover:bg-surface-200 transition-colors">
-              <ApperIcon name="Settings" className="w-4 h-4 text-surface-600" />
-<button className="p-1 rounded-lg hover:bg-surface-200 transition-colors">
               <ApperIcon name="Settings" className="w-4 h-4 text-surface-600" />
             </button>
           </div>
