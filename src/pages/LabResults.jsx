@@ -155,10 +155,10 @@ const [results, setResults] = useState([])
     },
     'Cardiac Enzymes': {
       parameters: [
-        { name: 'troponin', label: 'Troponin I', unit: 'ng/mL', referenceRange: '<0.04' },
+{ name: 'troponin', label: 'Troponin I', unit: 'ng/mL', referenceRange: '<0.04' },
         { name: 'ckMb', label: 'CK-MB', unit: 'ng/mL', referenceRange: '0.0-6.3' },
         { name: 'ldh', label: 'LDH', unit: 'U/L', referenceRange: '140-280' }
-]
+      ]
     }
   }
 
@@ -180,31 +180,34 @@ const [results, setResults] = useState([])
       type: 'image/jpeg',
       uploadDate: '2024-01-15',
       associatedTest: 'LR003',
-      url: '#'
+url: '#'
     }
   ]
 
   useEffect(() => {
     // Simulate loading lab results and documents
-const timer = setTimeout(() => {
+    const timer = setTimeout(() => {
+      // Batch state updates to prevent render conflicts
       setResults(mockResults)
       setUploadedDocuments(mockDocuments)
       setSelectedPatients(mockPatients)
-      setLoading(false)
-      toast.success('Lab results loaded successfully')
+      
+      // Use a separate timeout for loading state to ensure proper batching
+      setTimeout(() => {
+        setLoading(false)
+        toast.success('Lab results loaded successfully')
+      }, 100)
     }, 1000)
 
     return () => clearTimeout(timer)
   }, [])
-
-  // Quick stats calculations
+// Quick stats calculations
   const stats = {
     pending: results.filter(r => r.status === 'pending').length,
-completed: results.filter(r => r.status === 'completed').length,
+    completed: results.filter(r => r.status === 'completed').length,
     critical: results.filter(r => r.criticalFlags).length,
     avgTurnaround: '24 hrs'
   }
-
   // Filter results based on search and filters
   const filteredResults = results.filter(result => {
     const matchesSearch =
@@ -215,19 +218,21 @@ completed: results.filter(r => r.status === 'completed').length,
     
     const matchesStatus = statusFilter === 'all' || result.status === statusFilter
     
-    const matchesDate = dateFilter === 'all' || 
+const matchesDate = dateFilter === 'all' || 
       (dateFilter === 'today' && result.orderDate === '2024-01-16') ||
       (dateFilter === 'week' && ['2024-01-15', '2024-01-16', '2024-01-14'].includes(result.orderDate))
-return matchesSearch && matchesStatus && matchesDate
+    return matchesSearch && matchesStatus && matchesDate
   })
 
   // Form handling functions
   const handleInputChange = (field, value) => {
+    // Batch state updates to prevent render conflicts
     setFormData(prev => ({
       ...prev,
       [field]: value
     }))
-    // Clear error when user starts typing
+    
+    // Clear error when user starts typing (batched separately)
     if (formErrors[field]) {
       setFormErrors(prev => ({
         ...prev,
@@ -293,12 +298,17 @@ return matchesSearch && matchesStatus && matchesDate
       doctorOrdered: 'Dr. Lab Tech',
       interpretation: formData.interpretation,
       comments: formData.comments
-    }
+}
 
+    // Batch all state updates to prevent render conflicts
     setResults(prev => [newResult, ...prev])
-    resetForm()
-    toast.success(`Lab results entered successfully for ${patient.name}`)
-    setActiveTab('results')
+    
+    // Use setTimeout to ensure state updates are properly batched
+    setTimeout(() => {
+      resetForm()
+      toast.success(`Lab results entered successfully for ${patient.name}`)
+      setActiveTab('results')
+    }, 0)
   }
 
   const resetForm = () => {
@@ -395,7 +405,7 @@ return matchesSearch && matchesStatus && matchesDate
         return
       }
 
-      // Simulate upload progress
+// Simulate upload progress
       const fileId = Date.now() + Math.random()
       setUploadProgress(prev => ({ ...prev, [fileId]: 0 }))
       
@@ -404,9 +414,10 @@ return matchesSearch && matchesStatus && matchesDate
           const currentProgress = prev[fileId] || 0
           if (currentProgress >= 100) {
             clearInterval(uploadInterval)
-            // Add to uploaded documents
+            
+            // Create new document object
             const newDoc = {
-              id: `DOC${uploadedDocuments.length + 1}`,
+              id: `DOC${Date.now()}`,
               name: file.name,
               size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
               type: file.type,
@@ -414,8 +425,13 @@ return matchesSearch && matchesStatus && matchesDate
               associatedTest: '',
               url: URL.createObjectURL(file)
             }
-            setUploadedDocuments(prev => [...prev, newDoc])
-            toast.success(`${file.name} uploaded successfully`)
+            
+            // Batch state updates to prevent render conflicts
+            setTimeout(() => {
+              setUploadedDocuments(prev => [...prev, newDoc])
+              toast.success(`${file.name} uploaded successfully`)
+            }, 0)
+            
             return { ...prev, [fileId]: undefined }
           }
           return { ...prev, [fileId]: currentProgress + 10 }
@@ -1083,9 +1099,9 @@ if (loading) {
                         
                         <div className="flex items-center justify-between mt-4">
                           <select
-                            value={doc.associatedTest}
-                            onChange={(e) => {
+onChange={(e) => {
                               const testId = e.target.value
+                              // Batch state updates to prevent render conflicts
                               setUploadedDocuments(prev => 
                                 prev.map(d => 
                                   d.id === doc.id 
@@ -1093,9 +1109,12 @@ if (loading) {
                                     : d
                                 )
                               )
+                              // Show toast after state update
                               if (testId) {
-                                toast.success(`Document associated with test ${testId}`)
-                              }
+                                setTimeout(() => {
+                                  toast.success(`Document associated with test ${testId}`)
+                                }, 0)
+}
                             }}
                             className="text-xs border border-surface-200 rounded-lg px-2 py-1 bg-white"
                           >
