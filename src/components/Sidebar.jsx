@@ -116,12 +116,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </div>
 
         {/* Sidebar Footer */}
+{/* Sidebar Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-surface-200 bg-surface-50">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">AD</span>
             </div>
-<div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-surface-900 truncate">Admin User</p>
               <p className="text-xs text-surface-600 truncate">admin@medflow.com</p>
             </div>
@@ -132,5 +133,4 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </div>
       </motion.div>
     </>
-
 export default Sidebar
