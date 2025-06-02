@@ -659,10 +659,11 @@ const Reports = () => {
               </div>
 
               {/* Action Buttons */}
+{/* Action Buttons */}
               <div className="flex flex-wrap gap-4">
                 <button
                   onClick={() => handleGenerateReport('Appointment Analytics')}
-                  className="medical-button bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 focus:ring-purple-500 shadow-lg hover:shadow-xl"
+                  className="medical-button-primary"
                 >
                   Appointment Report
                 </button>
@@ -786,10 +787,10 @@ const Reports = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4">
+<div className="flex flex-wrap gap-4">
                 <button
                   onClick={() => handleGenerateReport('Department Analysis')}
-                  className="medical-button bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 focus:ring-orange-500 shadow-lg hover:shadow-xl"
+                  className="medical-button-primary"
                 >
                   Department Report
                 </button>
