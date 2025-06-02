@@ -7,6 +7,7 @@ import PatientManagement from './pages/PatientManagement'
 import Appointments from './pages/Appointments'
 import Billing from './pages/Billing'
 import Emergency from './pages/Emergency'
+import LabResults from './pages/LabResults'
 
 function App() {
   return (
@@ -15,12 +16,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/patient-management" element={<PatientManagement />} />
         <Route path="/appointments" element={<Appointments />} />
-<Route path="/appointments" element={<Appointments />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/emergency" element={<Emergency />} />
         <Route path="/lab-results" element={<LabResults />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
