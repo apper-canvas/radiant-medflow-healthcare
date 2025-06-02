@@ -9,9 +9,12 @@ const LabResults = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('all')
-  const [results, setResults] = useState([])
+const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
-
+  const [activeTab, setActiveTab] = useState('results')
+  const [uploadedDocuments, setUploadedDocuments] = useState([])
+  const [dragActive, setDragActive] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState({})
   // Mock lab results data
   const mockResults = [
     {
@@ -90,14 +93,37 @@ const LabResults = () => {
         ldh: '185 U/L'
       },
       criticalFlags: false,
-      doctorOrdered: 'Dr. Anderson'
+doctorOrdered: 'Dr. Anderson'
+    }
+  ]
+
+  // Mock uploaded documents data
+  const mockDocuments = [
+    {
+      id: 'DOC001',
+      name: 'CBC_Report_JohnSmith.pdf',
+      size: '2.3 MB',
+      type: 'application/pdf',
+      uploadDate: '2024-01-15',
+      associatedTest: 'LR001',
+      url: '#'
+    },
+    {
+      id: 'DOC002',
+      name: 'Thyroid_Scan_MichaelBrown.jpg',
+      size: '1.8 MB',
+      type: 'image/jpeg',
+      uploadDate: '2024-01-15',
+      associatedTest: 'LR003',
+      url: '#'
     }
   ]
 
   useEffect(() => {
-    // Simulate loading lab results
+    // Simulate loading lab results and documents
     const timer = setTimeout(() => {
       setResults(mockResults)
+      setUploadedDocuments(mockDocuments)
       setLoading(false)
       toast.success('Lab results loaded successfully')
     }, 1000)
@@ -108,14 +134,14 @@ const LabResults = () => {
   // Quick stats calculations
   const stats = {
     pending: results.filter(r => r.status === 'pending').length,
-    completed: results.filter(r => r.status === 'completed').length,
+completed: results.filter(r => r.status === 'completed').length,
     critical: results.filter(r => r.criticalFlags).length,
     avgTurnaround: '24 hrs'
   }
 
   // Filter results based on search and filters
   const filteredResults = results.filter(result => {
-    const matchesSearch = 
+    const matchesSearch =
       result.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       result.patientId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       result.testType.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -156,8 +182,110 @@ const LabResults = () => {
         ? { ...result, criticalFlags: !result.criticalFlags }
         : result
     ))
-    const result = results.find(r => r.id === resultId)
+const result = results.find(r => r.id === resultId)
     toast.info(`Critical flag ${result.criticalFlags ? 'removed from' : 'added to'} ${result.patientName}'s results`)
+  }
+
+  // Document upload handlers
+  const handleDrag = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFiles(e.dataTransfer.files)
+    }
+  }
+
+  const handleFileInput = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFiles(e.target.files)
+    }
+  }
+
+  const handleFiles = (files) => {
+    Array.from(files).forEach(file => {
+      // Validate file type
+      const allowedTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ]
+      
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`File type not supported: ${file.name}`)
+        return
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`File too large: ${file.name} (max 10MB)`)
+        return
+      }
+
+      // Simulate upload progress
+      const fileId = Date.now() + Math.random()
+      setUploadProgress(prev => ({ ...prev, [fileId]: 0 }))
+      
+      const uploadInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          const currentProgress = prev[fileId] || 0
+          if (currentProgress >= 100) {
+            clearInterval(uploadInterval)
+            // Add to uploaded documents
+            const newDoc = {
+              id: `DOC${uploadedDocuments.length + 1}`,
+              name: file.name,
+              size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+              type: file.type,
+              uploadDate: new Date().toISOString().split('T')[0],
+              associatedTest: '',
+              url: URL.createObjectURL(file)
+            }
+            setUploadedDocuments(prev => [...prev, newDoc])
+            toast.success(`${file.name} uploaded successfully`)
+            return { ...prev, [fileId]: undefined }
+          }
+          return { ...prev, [fileId]: currentProgress + 10 }
+        })
+      }, 200)
+    })
+  }
+
+  const handleDeleteDocument = (docId) => {
+    const doc = uploadedDocuments.find(d => d.id === docId)
+    if (window.confirm(`Are you sure you want to delete ${doc.name}?`)) {
+      setUploadedDocuments(prev => prev.filter(d => d.id !== docId))
+      toast.success('Document deleted successfully')
+    }
+  }
+
+  const handleDownloadDocument = (doc) => {
+    toast.success(`Downloading ${doc.name}`)
+    // In a real app, this would trigger the actual download
+  }
+
+  const getFileIcon = (type) => {
+    if (type.includes('pdf')) return 'FileText'
+    if (type.includes('image')) return 'Image'
+    if (type.includes('word')) return 'FileText'
+    if (type.includes('excel') || type.includes('sheet')) return 'FileSpreadsheet'
+    return 'File'
   }
 
   const getStatusBadge = (status) => {
@@ -182,13 +310,13 @@ const LabResults = () => {
       case 'routine':
         return 'text-blue-600 bg-blue-100'
       default:
+default:
         return 'text-surface-600 bg-surface-100'
     }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/30 to-secondary-50/30 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -347,135 +475,338 @@ const LabResults = () => {
                 <option value="month">This Month</option>
               </select>
             </div>
-          </div>
+</div>
         </motion.section>
 
-        {/* Results Table */}
+        {/* Tabbed Interface */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="medical-card"
         >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-surface-900">
-              Lab Results ({filteredResults.length})
-            </h3>
-            <button
-              onClick={() => toast.info('Refreshing lab results...')}
-              className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium transition-colors"
-            >
-              <ApperIcon name="RefreshCw" className="w-4 h-4" />
-              <span>Refresh</span>
-            </button>
+          <div className="border-b border-surface-200 mb-6">
+            <nav className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab('results')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'results'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-surface-500 hover:text-surface-700 hover:border-surface-300'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <ApperIcon name="FileText" className="w-4 h-4" />
+                  <span>View Results ({filteredResults.length})</span>
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('upload')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'upload'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-surface-500 hover:text-surface-700 hover:border-surface-300'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <ApperIcon name="Upload" className="w-4 h-4" />
+                  <span>Upload Documents ({uploadedDocuments.length})</span>
+                </div>
+              </button>
+            </nav>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-surface-200">
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Lab ID</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Patient</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Test Type</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Status</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Priority</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Order Date</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Doctor</th>
-                  <th className="text-left py-3 px-4 font-semibold text-surface-900">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredResults.map((result, index) => (
-                  <motion.tr
-                    key={result.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className="border-b border-surface-100 hover:bg-surface-50 transition-colors"
-                  >
-                    <td className="py-4 px-4">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium text-surface-900">{result.id}</span>
-                        {result.criticalFlags && (
-                          <ApperIcon name="AlertTriangle" className="w-4 h-4 text-red-500" />
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div>
-                        <p className="font-medium text-surface-900">{result.patientName}</p>
-                        <p className="text-sm text-surface-600">{result.patientId}</p>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="text-surface-900">{result.testType}</span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`${getStatusBadge(result.status)} capitalize`}>
-                        {result.status.replace('-', ' ')}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`medical-badge ${getPriorityColor(result.priority)} capitalize`}>
-                        {result.priority}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div>
-                        <p className="text-surface-900">{result.orderDate}</p>
-                        {result.completedDate && (
-                          <p className="text-sm text-surface-600">Completed: {result.completedDate}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="text-surface-900">{result.doctorOrdered}</span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => handleViewResult(result.id)}
-                          className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors"
-                          title="View Results"
-                        >
-                          <ApperIcon name="Eye" className="w-4 h-4" />
-                        </button>
-                        
-                        {result.status === 'completed' && (
-                          <button
-                            onClick={() => handleDownloadReport(result.id)}
-                            className="p-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-600 transition-colors"
-                            title="Download Report"
-                          >
-                            <ApperIcon name="Download" className="w-4 h-4" />
-                          </button>
-                        )}
-                        
-                        <button
-                          onClick={() => handleFlagCritical(result.id)}
-                          className={`p-2 rounded-lg transition-colors ${
-                            result.criticalFlags 
-                              ? 'bg-red-100 hover:bg-red-200 text-red-600' 
-                              : 'bg-surface-100 hover:bg-surface-200 text-surface-600'
-                          }`}
-                          title={result.criticalFlags ? "Remove Critical Flag" : "Flag as Critical"}
-                        >
-                          <ApperIcon name="Flag" className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-
-            {filteredResults.length === 0 && (
-              <div className="text-center py-12">
-                <ApperIcon name="FileX" className="w-12 h-12 text-surface-400 mx-auto mb-4" />
-                <p className="text-surface-600">No lab results found matching your criteria</p>
+          {activeTab === 'results' ? (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-surface-900">
+                  Lab Results ({filteredResults.length})
+                </h3>
+                <button
+                  onClick={() => toast.info('Refreshing lab results...')}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium transition-colors"
+                >
+                  <ApperIcon name="RefreshCw" className="w-4 h-4" />
+                  <span>Refresh</span>
+                </button>
               </div>
-)}
-          </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-surface-200">
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Lab ID</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Patient</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Test Type</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Status</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Priority</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Order Date</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Doctor</th>
+                      <th className="text-left py-3 px-4 font-semibold text-surface-900">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredResults.map((result, index) => (
+                      <motion.tr
+                        key={result.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 + index * 0.1 }}
+                        className="border-b border-surface-100 hover:bg-surface-50 transition-colors"
+                      >
+                        <td className="py-4 px-4">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium text-surface-900">{result.id}</span>
+                            {result.criticalFlags && (
+                              <ApperIcon name="AlertTriangle" className="w-4 h-4 text-red-500" />
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div>
+                            <p className="font-medium text-surface-900">{result.patientName}</p>
+                            <p className="text-sm text-surface-600">{result.patientId}</p>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className="text-surface-900">{result.testType}</span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`${getStatusBadge(result.status)} capitalize`}>
+                            {result.status.replace('-', ' ')}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`medical-badge ${getPriorityColor(result.priority)} capitalize`}>
+                            {result.priority}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div>
+                            <p className="text-surface-900">{result.orderDate}</p>
+                            {result.completedDate && (
+                              <p className="text-sm text-surface-600">Completed: {result.completedDate}</p>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className="text-surface-900">{result.doctorOrdered}</span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => handleViewResult(result.id)}
+                              className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-600 transition-colors"
+                              title="View Results"
+                            >
+                              <ApperIcon name="Eye" className="w-4 h-4" />
+                            </button>
+                            
+                            {result.status === 'completed' && (
+                              <button
+                                onClick={() => handleDownloadReport(result.id)}
+                                className="p-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-600 transition-colors"
+                                title="Download Report"
+                              >
+                                <ApperIcon name="Download" className="w-4 h-4" />
+                              </button>
+                            )}
+                            
+                            <button
+                              onClick={() => handleFlagCritical(result.id)}
+                              className={`p-2 rounded-lg transition-colors ${
+                                result.criticalFlags 
+                                  ? 'bg-red-100 hover:bg-red-200 text-red-600' 
+                                  : 'bg-surface-100 hover:bg-surface-200 text-surface-600'
+                              }`}
+                              title={result.criticalFlags ? "Remove Critical Flag" : "Flag as Critical"}
+                            >
+                              <ApperIcon name="Flag" className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {filteredResults.length === 0 && (
+                  <div className="text-center py-12">
+                    <ApperIcon name="FileX" className="w-12 h-12 text-surface-400 mx-auto mb-4" />
+                    <p className="text-surface-600">No lab results found matching your criteria</p>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="space-y-6">
+              {/* Upload Zone */}
+              <div
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                  dragActive 
+                    ? 'border-primary-400 bg-primary-50' 
+                    : 'border-surface-300 hover:border-primary-300 hover:bg-surface-50'
+                }`}
+              >
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileInput}
+                  accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.xls,.xlsx"
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="p-4 rounded-full bg-primary-100">
+                      <ApperIcon name="Upload" className="w-8 h-8 text-primary-600" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-medium text-surface-900 mb-2">
+                        Drop files here or click to upload
+                      </p>
+                      <p className="text-sm text-surface-600">
+                        Supports: PDF, Images (JPG, PNG, GIF), Word, Excel files
+                      </p>
+                      <p className="text-xs text-surface-500 mt-1">
+                        Maximum file size: 10MB
+                      </p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              {/* Upload Progress */}
+              {Object.keys(uploadProgress).length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium text-surface-900">Uploading Files</h4>
+                  {Object.entries(uploadProgress).map(([fileId, progress]) => (
+                    progress !== undefined && (
+                      <div key={fileId} className="bg-surface-50 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-surface-700">Uploading...</span>
+                          <span className="text-sm font-medium text-surface-900">{progress}%</span>
+                        </div>
+                        <div className="w-full bg-surface-200 rounded-full h-2">
+                          <div 
+                            className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${progress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )
+                  ))}
+                </div>
+              )}
+
+              {/* Document Library */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold text-surface-900">
+                    Uploaded Documents ({uploadedDocuments.length})
+                  </h4>
+                  <button
+                    onClick={() => toast.info('Refreshing document library...')}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-surface-100 hover:bg-surface-200 text-surface-700 text-sm font-medium transition-colors"
+                  >
+                    <ApperIcon name="RefreshCw" className="w-4 h-4" />
+                    <span>Refresh</span>
+                  </button>
+                </div>
+
+                {uploadedDocuments.length === 0 ? (
+                  <div className="text-center py-8">
+                    <ApperIcon name="FileX" className="w-12 h-12 text-surface-400 mx-auto mb-4" />
+                    <p className="text-surface-600">No documents uploaded yet</p>
+                    <p className="text-sm text-surface-500 mt-1">Upload your first document using the area above</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {uploadedDocuments.map((doc, index) => (
+                      <motion.div
+                        key={doc.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="bg-surface-50 rounded-xl p-4 border border-surface-200 hover:border-primary-300 transition-colors"
+                      >
+                        <div className="flex items-start space-x-3">
+                          <div className="p-2 rounded-lg bg-white border border-surface-200">
+                            <ApperIcon name={getFileIcon(doc.type)} className="w-6 h-6 text-surface-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h5 className="font-medium text-surface-900 truncate">{doc.name}</h5>
+                            <p className="text-sm text-surface-600">{doc.size}</p>
+                            <p className="text-xs text-surface-500">Uploaded: {doc.uploadDate}</p>
+                            {doc.associatedTest && (
+                              <p className="text-xs text-primary-600 mt-1">
+                                Associated with: {doc.associatedTest}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-4">
+                          <select
+                            value={doc.associatedTest}
+                            onChange={(e) => {
+                              const testId = e.target.value
+                              setUploadedDocuments(prev => 
+                                prev.map(d => 
+                                  d.id === doc.id 
+                                    ? { ...d, associatedTest: testId }
+                                    : d
+                                )
+                              )
+                              if (testId) {
+                                toast.success(`Document associated with test ${testId}`)
+                              }
+                            }}
+                            className="text-xs border border-surface-200 rounded-lg px-2 py-1 bg-white"
+                          >
+                            <option value="">No test selected</option>
+                            {results.map(result => (
+                              <option key={result.id} value={result.id}>
+                                {result.id} - {result.patientName}
+                              </option>
+                            ))}
+                          </select>
+                          
+                          <div className="flex items-center space-x-1">
+                            <button
+                              onClick={() => handleDownloadDocument(doc)}
+                              className="p-1 rounded hover:bg-white transition-colors"
+                              title="Download"
+                            >
+                              <ApperIcon name="Download" className="w-4 h-4 text-surface-600" />
+                            </button>
+                            <button
+                              onClick={() => toast.info(`Viewing ${doc.name}`)}
+                              className="p-1 rounded hover:bg-white transition-colors"
+                              title="View"
+                            >
+                              <ApperIcon name="Eye" className="w-4 h-4 text-surface-600" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteDocument(doc.id)}
+                              className="p-1 rounded hover:bg-white transition-colors"
+                              title="Delete"
+                            >
+                              <ApperIcon name="Trash2" className="w-4 h-4 text-red-500" />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </motion.section>
       </main>
     </div>
