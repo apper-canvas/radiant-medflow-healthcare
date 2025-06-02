@@ -283,8 +283,7 @@ const handleSubmitResult = (e) => {
       return
     }
 
-    setSubmitting(true)
-    const patient = selectedPatients.find(p => p.id === formData.patientId)
+setSubmitting(true)
     const patient = selectedPatients.find(p => p.id === formData.patientId)
     const newResult = {
       id: `LR${String(results.length + 1).padStart(3, '0')}`,
@@ -313,8 +312,7 @@ const handleSubmitResult = (e) => {
     }, 0)
   }
 
-  const resetForm = () => {
-  const resetForm = () => {
+const resetForm = () => {
     setFormData({
       patientId: '',
       testType: '',
