@@ -458,13 +458,11 @@ const Pharmacy = () => {
               </button>
             </div>
           </form>
-        </motion.div>
+</motion.div>
       </motion.div>
     )
-)
   }
 
-  return (
   return (
     <div className="min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/30 to-secondary-50/30">
       {/* Header */}
