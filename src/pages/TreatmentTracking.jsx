@@ -7,13 +7,11 @@ import patientService from '../services/patientService'
 
 const TreatmentTracking = () => {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('records')
+const [activeTab, setActiveTab] = useState('records')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPatient, setSelectedPatient] = useState(null)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showProgressModal, setShowProgressModal] = useState(false)
-const [showProgressModal, setShowProgressModal] = useState(false)
-
   // Data states
   const [patients, setPatients] = useState([])
   const [treatmentRecords, setTreatmentRecords] = useState([])
