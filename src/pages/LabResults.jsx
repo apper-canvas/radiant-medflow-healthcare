@@ -15,7 +15,17 @@ const [results, setResults] = useState([])
   const [uploadedDocuments, setUploadedDocuments] = useState([])
   const [dragActive, setDragActive] = useState(false)
   const [uploadProgress, setUploadProgress] = useState({})
-  // Mock lab results data
+  const [formData, setFormData] = useState({
+    patientId: '',
+    testType: '',
+    priority: 'routine',
+    parameters: {},
+    interpretation: '',
+    comments: ''
+  })
+  const [formErrors, setFormErrors] = useState({})
+  const [selectedPatients, setSelectedPatients] = useState([])
+// Mock lab results data
   const mockResults = [
     {
       id: 'LR001',
@@ -93,9 +103,64 @@ const [results, setResults] = useState([])
         ldh: '185 U/L'
       },
       criticalFlags: false,
-doctorOrdered: 'Dr. Anderson'
+      doctorOrdered: 'Dr. Anderson'
     }
   ]
+
+  // Mock patients data for form
+  const mockPatients = [
+    { id: 'P12345', name: 'John Smith', age: 45, gender: 'Male' },
+    { id: 'P67890', name: 'Sarah Johnson', age: 32, gender: 'Female' },
+    { id: 'P54321', name: 'Michael Brown', age: 58, gender: 'Male' },
+    { id: 'P98765', name: 'Emily Davis', age: 28, gender: 'Female' },
+    { id: 'P13579', name: 'Robert Wilson', age: 67, gender: 'Male' },
+    { id: 'P24681', name: 'Lisa Anderson', age: 41, gender: 'Female' },
+    { id: 'P35792', name: 'David Martinez', age: 36, gender: 'Male' }
+  ]
+
+  // Test type configurations with parameters and reference ranges
+  const testConfigurations = {
+    'Complete Blood Count (CBC)': {
+      parameters: [
+        { name: 'wbc', label: 'White Blood Cells', unit: 'K/uL', referenceRange: '4.0-11.0' },
+        { name: 'rbc', label: 'Red Blood Cells', unit: 'M/uL', referenceRange: '4.2-5.4' },
+        { name: 'hemoglobin', label: 'Hemoglobin', unit: 'g/dL', referenceRange: '12.0-16.0' },
+        { name: 'hematocrit', label: 'Hematocrit', unit: '%', referenceRange: '36-46' },
+        { name: 'platelets', label: 'Platelets', unit: 'K/uL', referenceRange: '150-450' }
+      ]
+    },
+    'Lipid Panel': {
+      parameters: [
+        { name: 'totalCholesterol', label: 'Total Cholesterol', unit: 'mg/dL', referenceRange: '<200' },
+        { name: 'ldl', label: 'LDL Cholesterol', unit: 'mg/dL', referenceRange: '<100' },
+        { name: 'hdl', label: 'HDL Cholesterol', unit: 'mg/dL', referenceRange: '>40' },
+        { name: 'triglycerides', label: 'Triglycerides', unit: 'mg/dL', referenceRange: '<150' }
+      ]
+    },
+    'Thyroid Function Tests': {
+      parameters: [
+        { name: 'tsh', label: 'TSH', unit: 'mIU/L', referenceRange: '0.4-4.0' },
+        { name: 't4', label: 'Free T4', unit: 'ug/dL', referenceRange: '0.8-1.8' },
+        { name: 't3', label: 'Free T3', unit: 'ng/dL', referenceRange: '230-420' }
+      ]
+    },
+    'Comprehensive Metabolic Panel': {
+      parameters: [
+        { name: 'glucose', label: 'Glucose', unit: 'mg/dL', referenceRange: '70-100' },
+        { name: 'bun', label: 'BUN', unit: 'mg/dL', referenceRange: '7-20' },
+        { name: 'creatinine', label: 'Creatinine', unit: 'mg/dL', referenceRange: '0.6-1.2' },
+        { name: 'sodium', label: 'Sodium', unit: 'mEq/L', referenceRange: '136-145' },
+        { name: 'potassium', label: 'Potassium', unit: 'mEq/L', referenceRange: '3.5-5.0' }
+      ]
+    },
+    'Cardiac Enzymes': {
+      parameters: [
+        { name: 'troponin', label: 'Troponin I', unit: 'ng/mL', referenceRange: '<0.04' },
+        { name: 'ckMb', label: 'CK-MB', unit: 'ng/mL', referenceRange: '0.0-6.3' },
+        { name: 'ldh', label: 'LDH', unit: 'U/L', referenceRange: '140-280' }
+]
+    }
+  }
 
   // Mock uploaded documents data
   const mockDocuments = [
@@ -121,9 +186,10 @@ doctorOrdered: 'Dr. Anderson'
 
   useEffect(() => {
     // Simulate loading lab results and documents
-    const timer = setTimeout(() => {
+const timer = setTimeout(() => {
       setResults(mockResults)
       setUploadedDocuments(mockDocuments)
+      setSelectedPatients(mockPatients)
       setLoading(false)
       toast.success('Lab results loaded successfully')
     }, 1000)
@@ -152,9 +218,100 @@ completed: results.filter(r => r.status === 'completed').length,
     const matchesDate = dateFilter === 'all' || 
       (dateFilter === 'today' && result.orderDate === '2024-01-16') ||
       (dateFilter === 'week' && ['2024-01-15', '2024-01-16', '2024-01-14'].includes(result.orderDate))
-    
-    return matchesSearch && matchesStatus && matchesDate
+return matchesSearch && matchesStatus && matchesDate
   })
+
+  // Form handling functions
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+    // Clear error when user starts typing
+    if (formErrors[field]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }))
+    }
+  }
+
+  const handleParameterChange = (paramName, value) => {
+    setFormData(prev => ({
+      ...prev,
+      parameters: {
+        ...prev.parameters,
+        [paramName]: value
+      }
+    }))
+  }
+
+  const validateForm = () => {
+    const errors = {}
+    
+    if (!formData.patientId) {
+      errors.patientId = 'Please select a patient'
+    }
+    
+    if (!formData.testType) {
+      errors.testType = 'Please select a test type'
+    }
+    
+    if (formData.testType && testConfigurations[formData.testType]) {
+      const config = testConfigurations[formData.testType]
+      config.parameters.forEach(param => {
+        if (!formData.parameters[param.name] || formData.parameters[param.name].trim() === '') {
+          errors[param.name] = `${param.label} is required`
+        }
+      })
+    }
+    
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleSubmitResult = (e) => {
+    e.preventDefault()
+    
+    if (!validateForm()) {
+      toast.error('Please correct the errors in the form')
+      return
+    }
+
+    const patient = selectedPatients.find(p => p.id === formData.patientId)
+    const newResult = {
+      id: `LR${String(results.length + 1).padStart(3, '0')}`,
+      patientName: patient.name,
+      patientId: patient.id,
+      testType: formData.testType,
+      status: 'completed',
+      priority: formData.priority,
+      orderDate: new Date().toISOString().split('T')[0],
+      completedDate: new Date().toISOString().split('T')[0],
+      results: formData.parameters,
+      criticalFlags: false,
+      doctorOrdered: 'Dr. Lab Tech',
+      interpretation: formData.interpretation,
+      comments: formData.comments
+    }
+
+    setResults(prev => [newResult, ...prev])
+    resetForm()
+    toast.success(`Lab results entered successfully for ${patient.name}`)
+    setActiveTab('results')
+  }
+
+  const resetForm = () => {
+    setFormData({
+      patientId: '',
+      testType: '',
+      priority: 'routine',
+      parameters: {},
+      interpretation: '',
+      comments: ''
+    })
+    setFormErrors({})
+  }
 
   const handleViewResult = (resultId) => {
     const result = results.find(r => r.id === resultId)
@@ -181,8 +338,8 @@ completed: results.filter(r => r.status === 'completed').length,
       result.id === resultId 
         ? { ...result, criticalFlags: !result.criticalFlags }
         : result
-    ))
-const result = results.find(r => r.id === resultId)
+))
+    const result = results.find(r => r.id === resultId)
     toast.info(`Critical flag ${result.criticalFlags ? 'removed from' : 'added to'} ${result.patientName}'s results`)
   }
 
@@ -473,9 +630,9 @@ if (loading) {
                 <option value="today">Today</option>
                 <option value="week">This Week</option>
                 <option value="month">This Month</option>
-              </select>
+</select>
             </div>
-</div>
+          </div>
         </motion.section>
 
         {/* Tabbed Interface */}
@@ -497,7 +654,20 @@ if (loading) {
               >
                 <div className="flex items-center space-x-2">
                   <ApperIcon name="FileText" className="w-4 h-4" />
-                  <span>View Results ({filteredResults.length})</span>
+<span>View Results ({filteredResults.length})</span>
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('enter')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'enter'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-surface-500 hover:text-surface-700 hover:border-surface-300'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <ApperIcon name="Plus" className="w-4 h-4" />
+                  <span>Enter Results</span>
                 </div>
               </button>
               <button
@@ -635,9 +805,170 @@ if (loading) {
                     <ApperIcon name="FileX" className="w-12 h-12 text-surface-400 mx-auto mb-4" />
                     <p className="text-surface-600">No lab results found matching your criteria</p>
                   </div>
-                )}
+)}
               </div>
             </>
+          ) : activeTab === 'enter' ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-surface-900">Enter Lab Results</h3>
+                <button
+                  onClick={resetForm}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 text-surface-700 font-medium transition-colors"
+                >
+                  <ApperIcon name="RotateCcw" className="w-4 h-4" />
+                  <span>Reset Form</span>
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmitResult} className="space-y-6">
+                {/* Patient Selection */}
+                <div className="medical-grid-2">
+                  <div>
+                    <label className="block text-sm font-medium text-surface-700 mb-2">
+                      Select Patient *
+                    </label>
+                    <select
+                      value={formData.patientId}
+                      onChange={(e) => handleInputChange('patientId', e.target.value)}
+                      className={`medical-select ${formErrors.patientId ? 'border-red-300 focus:border-red-400' : ''}`}
+                    >
+                      <option value="">Choose a patient...</option>
+                      {selectedPatients.map(patient => (
+                        <option key={patient.id} value={patient.id}>
+                          {patient.name} - {patient.id} ({patient.age}yr, {patient.gender})
+                        </option>
+                      ))}
+                    </select>
+                    {formErrors.patientId && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.patientId}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-surface-700 mb-2">
+                      Test Type *
+                    </label>
+                    <select
+                      value={formData.testType}
+                      onChange={(e) => {
+                        handleInputChange('testType', e.target.value)
+                        setFormData(prev => ({ ...prev, parameters: {} }))
+                      }}
+                      className={`medical-select ${formErrors.testType ? 'border-red-300 focus:border-red-400' : ''}`}
+                    >
+                      <option value="">Select test type...</option>
+                      {Object.keys(testConfigurations).map(testType => (
+                        <option key={testType} value={testType}>{testType}</option>
+                      ))}
+                    </select>
+                    {formErrors.testType && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.testType}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Priority Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                    Priority Level
+                  </label>
+                  <select
+                    value={formData.priority}
+                    onChange={(e) => handleInputChange('priority', e.target.value)}
+                    className="medical-select max-w-xs"
+                  >
+                    <option value="routine">Routine</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="stat">STAT</option>
+                  </select>
+                </div>
+
+                {/* Dynamic Test Parameters */}
+                {formData.testType && testConfigurations[formData.testType] && (
+                  <div>
+                    <h4 className="text-lg font-semibold text-surface-900 mb-4">Test Parameters</h4>
+                    <div className="medical-grid-2 gap-6">
+                      {testConfigurations[formData.testType].parameters.map(param => (
+                        <div key={param.name} className="space-y-2">
+                          <label className="block text-sm font-medium text-surface-700">
+                            {param.label} ({param.unit}) *
+                          </label>
+                          <div className="space-y-1">
+                            <input
+                              type="text"
+                              value={formData.parameters[param.name] || ''}
+                              onChange={(e) => handleParameterChange(param.name, e.target.value)}
+                              placeholder={`Enter ${param.label.toLowerCase()}`}
+                              className={`medical-input ${formErrors[param.name] ? 'border-red-300 focus:border-red-400' : ''}`}
+                            />
+                            <p className="text-xs text-surface-500">
+                              Reference Range: {param.referenceRange} {param.unit}
+                            </p>
+                            {formErrors[param.name] && (
+                              <p className="text-red-500 text-sm">{formErrors[param.name]}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Result Interpretation */}
+                <div>
+                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                    Clinical Interpretation
+                  </label>
+                  <select
+                    value={formData.interpretation}
+                    onChange={(e) => handleInputChange('interpretation', e.target.value)}
+                    className="medical-select max-w-md"
+                  >
+                    <option value="">Select interpretation...</option>
+                    <option value="normal">Normal</option>
+                    <option value="abnormal">Abnormal</option>
+                    <option value="borderline">Borderline</option>
+                    <option value="critical">Critical</option>
+                    <option value="pending-review">Pending Review</option>
+                  </select>
+                </div>
+
+                {/* Comments */}
+                <div>
+                  <label className="block text-sm font-medium text-surface-700 mb-2">
+                    Additional Comments
+                  </label>
+                  <textarea
+                    value={formData.comments}
+                    onChange={(e) => handleInputChange('comments', e.target.value)}
+                    placeholder="Enter any additional notes or observations..."
+                    rows={4}
+                    className="medical-input resize-none"
+                  />
+                </div>
+
+                {/* Form Actions */}
+                <div className="flex items-center justify-between pt-6 border-t border-surface-200">
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="flex items-center space-x-2 px-6 py-3 rounded-xl border border-surface-300 hover:bg-surface-50 text-surface-700 font-medium transition-colors"
+                  >
+                    <ApperIcon name="RotateCcw" className="w-4 h-4" />
+                    <span>Reset Form</span>
+                  </button>
+                  
+                  <button
+                    type="submit"
+                    className="medical-button-primary flex items-center space-x-2"
+                  >
+                    <ApperIcon name="Save" className="w-4 h-4" />
+                    <span>Submit Results</span>
+                  </button>
+                </div>
+              </form>
+            </div>
           ) : (
             <div className="space-y-6">
               {/* Upload Zone */}
