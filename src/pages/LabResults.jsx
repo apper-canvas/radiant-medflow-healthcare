@@ -343,14 +343,30 @@ const matchesDate = dateFilter === 'all' ||
     }
   }
 
-  const handleFlagCritical = (resultId) => {
-    setResults(prev => prev.map(result => 
-      result.id === resultId 
-        ? { ...result, criticalFlags: !result.criticalFlags }
-        : result
-))
+const handleFlagCritical = (resultId) => {
     const result = results.find(r => r.id === resultId)
-    toast.info(`Critical flag ${result.criticalFlags ? 'removed from' : 'added to'} ${result.patientName}'s results`)
+    if (!result) {
+      toast.error('Result not found')
+      return
+    }
+    
+    const newFlagState = !result.criticalFlags
+    
+    // Update the results state with the new critical flag
+    setResults(prev => 
+      prev.map(r => 
+        r.id === resultId 
+          ? { ...r, criticalFlags: newFlagState }
+          : r
+      )
+    )
+    
+    // Show success message
+    const message = newFlagState 
+      ? `Flagged ${result.patientName}'s results as critical`
+      : `Removed critical flag from ${result.patientName}'s results`
+    
+    toast.success(message)
   }
 
   // Document upload handlers

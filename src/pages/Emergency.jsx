@@ -334,8 +334,7 @@ const Emergency = () => {
         {/* Active Emergencies Status */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+transition={{ delay: 0.3 }}
           className="mt-8 medical-card"
         >
           <h3 className="text-lg font-bold text-surface-900 mb-6">Emergency Status Board</h3>
@@ -348,36 +347,44 @@ const Emergency = () => {
                   <th className="text-left py-3 px-4 font-medium text-surface-900">Severity</th>
                   <th className="text-left py-3 px-4 font-medium text-surface-900">Time</th>
                   <th className="text-left py-3 px-4 font-medium text-surface-900">Status</th>
-                </tr>
+</tr>
               </thead>
               <tbody>
-                {activeEmergencies.map((emergency) => (
-                  <tr key={emergency.id} className="border-b border-surface-100 hover:bg-surface-50">
-                    <td className="py-3 px-4 font-medium">{emergency.type}</td>
-                    <td className="py-3 px-4 text-surface-600">{emergency.location}</td>
-                    <td className="py-3 px-4">
-                      <span className={`medical-badge ${
-                        emergency.severity === 'critical' ? 'bg-red-100 text-red-800' :
-                        emergency.severity === 'high' ? 'bg-orange-100 text-orange-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {emergency.severity}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-surface-600">{emergency.time}</td>
-                    <td className="py-3 px-4">
-                      <span className={`medical-badge ${
-                        emergency.status === 'active' ? 'bg-red-100 text-red-800' :
-                        emergency.status === 'responding' ? 'bg-orange-100 text-orange-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        {emergency.status}
-                      </span>
+                {activeEmergencies.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="py-8 text-center text-surface-600">
+                      No emergencies recorded
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  activeEmergencies.map((emergency) => (
+                    <tr key={emergency.id} className="border-b border-surface-100 hover:bg-surface-50">
+                      <td className="py-3 px-4 font-medium">{emergency.type}</td>
+                      <td className="py-3 px-4 text-surface-600">{emergency.location}</td>
+                      <td className="py-3 px-4">
+                        <span className={`medical-badge ${
+                          emergency.severity === 'critical' ? 'bg-red-100 text-red-800' :
+                          emergency.severity === 'high' ? 'bg-orange-100 text-orange-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {emergency.severity}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-surface-600">{emergency.time}</td>
+                      <td className="py-3 px-4">
+                        <span className={`medical-badge ${
+                          emergency.status === 'active' ? 'bg-red-100 text-red-800' :
+                          emergency.status === 'responding' ? 'bg-orange-100 text-orange-800' :
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {emergency.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
-            </table>
+</table>
           </div>
         </motion.section>
       </main>

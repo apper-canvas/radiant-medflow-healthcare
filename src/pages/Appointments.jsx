@@ -387,7 +387,7 @@ const Appointments = () => {
                           className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                           title="Cancel appointment"
                         >
-                          <ApperIcon name="X" className="w-4 h-4" />
+<ApperIcon name="X" className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

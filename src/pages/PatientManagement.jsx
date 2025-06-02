@@ -349,8 +349,8 @@ const PatientManagement = () => {
                           >
                             Edit
                           </button>
-                          <button
-                            onClick={() => handleDeletePatient(patient.id)}
+<button
+                            onClick={() => handleDeletePatient(patient.Id)}
                             className="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-200 text-sm font-medium"
                           >
                             <ApperIcon name="Trash2" className="w-4 h-4" />
