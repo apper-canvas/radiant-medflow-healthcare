@@ -114,36 +114,27 @@ const navigate = useNavigate()
   // Get unread notification count
   const unreadCount = notifications.filter(n => !n.read).length
 
-  const recentActivities = [
-    {
-      id: 1,
-      type: 'appointment',
-      message: 'New appointment scheduled with Dr. Smith',
-      time: '2 minutes ago',
-      priority: 'normal'
-    },
-    {
-      id: 2,
-      type: 'emergency',
-      message: 'Emergency patient admitted to ICU',
-      time: '5 minutes ago',
-      priority: 'urgent'
-    },
-    {
-      id: 3,
-      type: 'discharge',
-      message: 'Patient John Doe discharged successfully',
-      time: '10 minutes ago',
-      priority: 'normal'
-    },
-    {
-      id: 4,
-      type: 'lab',
-      message: 'Lab results ready for Room 304',
-      time: '15 minutes ago',
-      priority: 'normal'
-    }
-  ]
+const [recentActivities, setRecentActivities] = useState([])
+
+  // Load real-time data on component mount
+  useEffect(() => {
+    // Load notifications and activities from actual services
+    // This can be implemented to fetch from multiple services
+    loadNotifications()
+    loadRecentActivities()
+  }, [])
+
+  const loadNotifications = async () => {
+    // This would fetch from notification service or aggregate from multiple sources
+    // For now, keeping empty to remove hardcoded data
+    setNotifications([])
+  }
+
+  const loadRecentActivities = async () => {
+    // This would aggregate recent activities from various services
+    // For now, keeping empty to remove hardcoded data
+    setRecentActivities([])
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/30 to-secondary-50/30">

@@ -4,6 +4,33 @@ import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
 import ApperIcon from '../components/ApperIcon'
 
+// Mock services for demonstration
+const medicationService = {
+  createMedication: async (data) => {
+    console.log('Creating medication:', data)
+    toast.success('Medication added successfully')
+    return { success: true, data }
+  },
+  updateMedication: async (id, data) => {
+    console.log('Updating medication:', id, data)
+    toast.success('Medication updated successfully')
+    return { success: true }
+  },
+  deleteMedication: async (id) => {
+    console.log('Deleting medication:', id)
+    toast.success('Medication deleted successfully')
+    return { success: true }
+  }
+}
+
+const prescriptionService = {
+  dispensePrescription: async (id) => {
+    console.log('Dispensing prescription:', id)
+    toast.success('Prescription dispensed successfully')
+    return { success: true }
+  }
+}
+
 const Pharmacy = () => {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('inventory')
@@ -12,7 +39,7 @@ const Pharmacy = () => {
   const [showAddForm, setShowAddForm] = useState(false)
   const [showDispenseForm, setShowDispenseForm] = useState(false)
   const [selectedPrescription, setSelectedPrescription] = useState(null)
-
+  const [loading, setLoading] = useState(false)
   // Sample data - in real app this would come from API
   const [medications, setMedications] = useState([
     {
@@ -127,49 +154,129 @@ const Pharmacy = () => {
     prescription.doctor.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  // Get low stock medications
-  const lowStockMedications = medications.filter(med => med.stock <= med.minStock)
+// Get low stock medications
+  const lowStockMedications = medications.filter(med => 
+    med.stock !== undefined && 
+    med.minStock !== undefined && 
+    parseInt(med.stock) <= parseInt(med.minStock)
+  )
 
-  const handleAddMedication = (medicationData) => {
-    const newMedication = {
-      id: Date.now(),
-      ...medicationData,
-      stock: parseInt(medicationData.stock),
-      minStock: parseInt(medicationData.minStock),
-      price: parseFloat(medicationData.price)
+  // Load functions for data refresh
+  const loadMedications = async () => {
+    try {
+      // In a real app, this would fetch from API
+      console.log('Loading medications...')
+    } catch (error) {
+      console.error('Error loading medications:', error)
+      toast.error('Failed to load medications')
     }
-    setMedications([...medications, newMedication])
-    setShowAddForm(false)
-    toast.success('Medication added successfully!')
   }
 
-  const handleUpdateStock = (medicationId, newStock) => {
-    setMedications(medications.map(med =>
-      med.id === medicationId ? { ...med, stock: newStock } : med
-    ))
-    toast.success('Stock updated successfully!')
+  const loadPrescriptions = async () => {
+    try {
+      // In a real app, this would fetch from API
+      console.log('Loading prescriptions...')
+    } catch (error) {
+      console.error('Error loading prescriptions:', error)
+      toast.error('Failed to load prescriptions')
+    }
   }
+const handleAddMedication = async (medicationData) => {
+    setLoading(true)
+    try {
+      // Create new medication with proper ID
+      const newMedication = {
+        id: medications.length + 1,
+        name: medicationData.name,
+        genericName: medicationData.genericName,
+        category: medicationData.category,
+        stock: parseInt(medicationData.stock) || 0,
+        minStock: parseInt(medicationData.minStock) || 0,
+        price: parseFloat(medicationData.price) || 0,
+        supplier: medicationData.supplier,
+        expiryDate: medicationData.expiryDate,
+        location: medicationData.location
+      }
 
-  const handleDispensePrescription = (prescriptionId) => {
-    setPrescriptions(prescriptions.map(prescription =>
-      prescription.id === prescriptionId ? { ...prescription, status: 'dispensed' } : prescription
-    ))
-    setShowDispenseForm(false)
-    setSelectedPrescription(null)
-    toast.success('Prescription dispensed successfully!')
+      const result = await medicationService.createMedication(newMedication)
+      if (result) {
+        setMedications(prev => [...prev, newMedication])
+        setShowAddForm(false)
+        await loadMedications()
+      }
+    } catch (error) {
+      console.error('Error adding medication:', error)
+      toast.error('Failed to add medication')
+    } finally {
+      setLoading(false)
+    }
   }
-
-  const handleDeleteMedication = (medicationId) => {
+const handleUpdateStock = async (medicationId, newStock) => {
+    setLoading(true)
+    try {
+      const result = await medicationService.updateMedication(medicationId, { stock: parseInt(newStock) })
+      if (result) {
+        setMedications(prev => prev.map(med => 
+          med.id === medicationId ? { ...med, stock: parseInt(newStock) } : med
+        ))
+        await loadMedications()
+      }
+    } catch (error) {
+      console.error('Error updating stock:', error)
+      toast.error('Failed to update stock')
+    } finally {
+      setLoading(false)
+    }
+  }
+const handleDispensePrescription = async (prescriptionId) => {
+    setLoading(true)
+    try {
+      const result = await prescriptionService.dispensePrescription(prescriptionId)
+      if (result) {
+        setPrescriptions(prev => prev.map(prescription => 
+          prescription.id === prescriptionId 
+            ? { ...prescription, status: 'dispensed' } 
+            : prescription
+        ))
+        setShowDispenseForm(false)
+        setSelectedPrescription(null)
+        await loadPrescriptions()
+      }
+    } catch (error) {
+      console.error('Error dispensing prescription:', error)
+      toast.error('Failed to dispense prescription')
+    } finally {
+      setLoading(false)
+    }
+  }
+const handleDeleteMedication = async (medicationId) => {
     if (window.confirm('Are you sure you want to delete this medication?')) {
-      setMedications(medications.filter(med => med.id !== medicationId))
-      toast.success('Medication deleted successfully!')
+      setLoading(true)
+      try {
+        const result = await medicationService.deleteMedication(medicationId)
+        if (result) {
+          setMedications(prev => prev.filter(med => med.id !== medicationId))
+          await loadMedications()
+        }
+      } catch (error) {
+        console.error('Error deleting medication:', error)
+        toast.error('Failed to delete medication')
+      } finally {
+        setLoading(false)
+      }
     }
   }
-
-  const handleReorderMedication = (medication) => {
+const handleReorderMedication = (medication) => {
     toast.info(`Reorder request sent for ${medication.name}`)
   }
 
+  // Update search effect
+  useEffect(() => {
+    if (searchTerm !== '') {
+      loadMedications()
+      loadPrescriptions()
+    }
+  }, [searchTerm])
   const AddMedicationForm = () => {
     const [formData, setFormData] = useState({
       name: '',

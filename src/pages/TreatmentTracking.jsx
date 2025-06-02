@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
 import ApperIcon from '../components/ApperIcon'
+import patientService from '../services/patientService'
 
 const TreatmentTracking = () => {
   const navigate = useNavigate()
@@ -11,81 +12,46 @@ const TreatmentTracking = () => {
   const [selectedPatient, setSelectedPatient] = useState(null)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showProgressModal, setShowProgressModal] = useState(false)
+const [showProgressModal, setShowProgressModal] = useState(false)
 
-  // Sample data - in real app this would come from API
-  const [patients] = useState([
-    {
-      id: 'P001',
-      name: 'Sarah Johnson',
-      age: 34,
-      gender: 'Female',
-      bloodType: 'O+',
-      phone: '+1 (555) 123-4567',
-      email: 'sarah.johnson@email.com'
-    },
-    {
-      id: 'P002',
-      name: 'Michael Chen',
-      age: 67,
-      gender: 'Male',
-      bloodType: 'A-',
-      phone: '+1 (555) 234-5678',
-      email: 'michael.chen@email.com'
-    },
-    {
-      id: 'P003',
-      name: 'Emma Williams',
-      age: 28,
-      gender: 'Female',
-      bloodType: 'B+',
-      phone: '+1 (555) 345-6789',
-      email: 'emma.williams@email.com'
-    }
-  ])
+  // Data states
+  const [patients, setPatients] = useState([])
+  const [treatmentRecords, setTreatmentRecords] = useState([])
+  const [loading, setLoading] = useState(false)
+  // Load data on component mount
+  useEffect(() => {
+    loadPatients()
+    loadTreatmentRecords()
+  }, [])
 
-  const [treatmentRecords, setTreatmentRecords] = useState([
-    {
-      id: 'TR001',
-      patientId: 'P001',
-      patientName: 'Sarah Johnson',
-      diagnosis: 'Hypertension',
-      icdCode: 'I10',
-      diagnosisDate: '2024-01-15',
-      severity: 'Moderate',
-      status: 'Active',
-      treatingPhysician: 'Dr. Smith',
-      department: 'Cardiology',
-      lastUpdated: '2024-01-20',
-      medications: [
-        { name: 'Lisinopril', dosage: '10mg', frequency: 'Daily', startDate: '2024-01-15' },
-        { name: 'Metoprolol', dosage: '25mg', frequency: 'Twice daily', startDate: '2024-01-15' }
-      ],
-      progressNotes: [
-        { date: '2024-01-20', note: 'Blood pressure improving, continue current medications', physician: 'Dr. Smith' },
-        { date: '2024-01-15', note: 'Initial diagnosis, started on ACE inhibitor', physician: 'Dr. Smith' }
-      ]
-    },
-    {
-      id: 'TR002',
-      patientId: 'P002',
-      patientName: 'Michael Chen',
-      diagnosis: 'Type 2 Diabetes Mellitus',
-      icdCode: 'E11.9',
-      diagnosisDate: '2024-01-10',
-      severity: 'Mild',
-      status: 'Active',
-      treatingPhysician: 'Dr. Brown',
-      department: 'Endocrinology',
-      lastUpdated: '2024-01-18',
-      medications: [
-        { name: 'Metformin', dosage: '500mg', frequency: 'Twice daily', startDate: '2024-01-10' }
-      ],
-      progressNotes: [
-        { date: '2024-01-18', note: 'Blood sugar levels stabilizing, patient responding well to medication', physician: 'Dr. Brown' },
-        { date: '2024-01-10', note: 'Initial diagnosis, patient education provided', physician: 'Dr. Brown' }
-      ]
+  const loadPatients = async () => {
+    setLoading(true)
+    try {
+      const data = await patientService.fetchPatients()
+      // Format patient data for treatment tracking
+      const formattedPatients = data.map(patient => ({
+        id: patient.Id,
+        name: `${patient.first_name || ''} ${patient.last_name || ''}`.trim() || patient.Name,
+        age: patient.date_of_birth ? new Date().getFullYear() - new Date(patient.date_of_birth).getFullYear() : 'Unknown',
+        gender: patient.gender || 'Unknown',
+        bloodType: patient.blood_type || 'Unknown',
+        phone: patient.phone || '',
+        email: patient.email || ''
+      }))
+      setPatients(formattedPatients)
+    } catch (error) {
+      console.error('Error loading patients:', error)
+      toast.error('Failed to load patients')
+    } finally {
+      setLoading(false)
     }
-  ])
+  }
+
+  const loadTreatmentRecords = async () => {
+    // Treatment records would come from a separate treatment service
+    // For now, keeping empty to remove hardcoded data
+    setTreatmentRecords([])
+  }
 
   // Form states
   const [diagnosisForm, setDiagnosisForm] = useState({

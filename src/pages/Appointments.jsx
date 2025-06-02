@@ -342,9 +342,9 @@ const Appointments = () => {
                   <th className="text-left py-3 px-4 font-medium text-surface-700">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+<tbody>
                 {appointments.map((appointment) => (
-                  <tr key={appointment.id} className="border-b border-surface-100 hover:bg-surface-50">
+                  <tr key={appointment.Id || appointment.id} className="border-b border-surface-100 hover:bg-surface-50">
                     <td className="py-4 px-4">
                       <div className="font-medium text-surface-900">{appointment.patientName}</div>
                     </td>
@@ -363,27 +363,29 @@ const Appointments = () => {
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <div className="flex items-center space-x-2">
-{appointment.status === 'pending' && (
+<div className="flex items-center space-x-2">
+                        {appointment.status === 'pending' && (
                           <button
-                            onClick={() => updateAppointmentStatus(appointment.id, 'confirmed')}
+                            onClick={() => updateAppointmentStatus(appointment.Id || appointment.id, 'confirmed')}
                             className="p-2 text-black hover:bg-secondary-100 rounded-lg transition-colors"
                             title="Confirm appointment"
                           >
                             <ApperIcon name="Check" className="w-4 h-4" />
                           </button>
                         )}
+)}
                         {appointment.status === 'confirmed' && (
                           <button
-                            onClick={() => updateAppointmentStatus(appointment.id, 'completed')}
+                            onClick={() => updateAppointmentStatus(appointment.Id || appointment.id, 'completed')}
                             className="p-2 text-black hover:bg-primary-100 rounded-lg transition-colors"
                             title="Mark as completed"
                           >
                             <ApperIcon name="CheckCircle" className="w-4 h-4" />
                           </button>
                         )}
+)}
                         <button
-                          onClick={() => deleteAppointment(appointment.id)}
+                          onClick={() => deleteAppointment(appointment.Id || appointment.id)}
                           className="p-2 text-black hover:bg-red-100 rounded-lg transition-colors"
                           title="Cancel appointment"
                         >

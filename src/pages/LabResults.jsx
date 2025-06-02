@@ -11,10 +11,11 @@ const LabResults = () => {
   const [dateFilter, setDateFilter] = useState('all')
 const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState('results')
+const [activeTab, setActiveTab] = useState('results')
   const [uploadedDocuments, setUploadedDocuments] = useState([])
   const [dragActive, setDragActive] = useState(false)
   const [uploadProgress, setUploadProgress] = useState({})
+  const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     patientId: '',
     testType: '',
@@ -274,8 +275,7 @@ const matchesDate = dateFilter === 'all' ||
     setFormErrors(errors)
     return Object.keys(errors).length === 0
   }
-
-  const handleSubmitResult = (e) => {
+const handleSubmitResult = (e) => {
     e.preventDefault()
     
     if (!validateForm()) {
@@ -283,6 +283,8 @@ const matchesDate = dateFilter === 'all' ||
       return
     }
 
+    setSubmitting(true)
+    const patient = selectedPatients.find(p => p.id === formData.patientId)
     const patient = selectedPatients.find(p => p.id === formData.patientId)
     const newResult = {
       id: `LR${String(results.length + 1).padStart(3, '0')}`,
@@ -302,15 +304,16 @@ const matchesDate = dateFilter === 'all' ||
 
     // Batch all state updates to prevent render conflicts
     setResults(prev => [newResult, ...prev])
-    
-    // Use setTimeout to ensure state updates are properly batched
+// Use setTimeout to ensure state updates are properly batched
     setTimeout(() => {
       resetForm()
+      setSubmitting(false)
       toast.success(`Lab results entered successfully for ${patient.name}`)
       setActiveTab('results')
     }, 0)
   }
 
+  const resetForm = () => {
   const resetForm = () => {
     setFormData({
       patientId: '',
@@ -991,12 +994,17 @@ if (loading) {
                     <span>Reset Form</span>
                   </button>
                   
-                  <button
+<button
                     type="submit"
-                    className="medical-button-primary flex items-center space-x-2"
+                    disabled={submitting}
+                    className="medical-button-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <ApperIcon name="Save" className="w-4 h-4" />
-                    <span>Submit Results</span>
+                    {submitting ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <ApperIcon name="Save" className="w-4 h-4" />
+                    )}
+                    <span>{submitting ? 'Submitting...' : 'Submit Results'}</span>
                   </button>
                 </div>
               </form>
