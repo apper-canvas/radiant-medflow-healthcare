@@ -307,16 +307,16 @@ const result = results.find(r => r.id === resultId)
         return 'text-red-600 bg-red-100'
       case 'urgent':
         return 'text-orange-600 bg-orange-100'
-      case 'routine':
+case 'routine':
         return 'text-blue-600 bg-blue-100'
       default:
-default:
         return 'text-surface-600 bg-surface-100'
     }
   }
 
-  if (loading) {
+if (loading) {
     return (
+      <div className="min-h-screen bg-gradient-to-br from-surface-50 via-primary-50/30 to-secondary-50/30 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
