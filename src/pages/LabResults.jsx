@@ -474,7 +474,7 @@ const LabResults = () => {
                 <ApperIcon name="FileX" className="w-12 h-12 text-surface-400 mx-auto mb-4" />
                 <p className="text-surface-600">No lab results found matching your criteria</p>
               </div>
-            )}
+)}
           </div>
         </motion.section>
       </main>
