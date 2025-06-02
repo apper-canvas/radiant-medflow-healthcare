@@ -5,8 +5,16 @@ import { toast } from 'react-toastify'
 import MainFeature from '../components/MainFeature'
 import ApperIcon from '../components/ApperIcon'
 const Home = () => {
-  const navigate = useNavigate()
+const navigate = useNavigate()
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState([
+    { id: 1, type: 'appointment', title: 'Upcoming Appointment', message: 'Dr. Smith appointment in 30 minutes', time: '2 min ago', read: false, priority: 'high' },
+    { id: 2, type: 'lab', title: 'Lab Results Ready', message: 'Blood test results for Room 304', time: '5 min ago', read: false, priority: 'normal' },
+    { id: 3, type: 'emergency', title: 'Emergency Alert', message: 'Code Blue resolved in ICU', time: '10 min ago', read: true, priority: 'urgent' },
+    { id: 4, type: 'patient', title: 'Patient Admission', message: 'New patient John Doe admitted', time: '15 min ago', read: false, priority: 'normal' },
+    { id: 5, type: 'pharmacy', title: 'Medication Alert', message: 'Low stock: Amoxicillin', time: '20 min ago', read: true, priority: 'normal' }
+  ])
 
   // Update time every minute
   useEffect(() => {
@@ -55,7 +63,7 @@ const Home = () => {
     }
 ]
 
-  // Handle quick action button clicks
+// Handle quick action button clicks
   const handleQuickAction = (actionName) => {
     switch (actionName) {
       case 'Add Patient':
@@ -65,20 +73,20 @@ const Home = () => {
       case 'Schedule':
         navigate('/appointments')
         toast.success('Navigating to Appointments')
-break
+        break
       case 'Emergency':
         navigate('/emergency')
         toast.warning('Opening Emergency Management System')
-break
+        break
       case 'Lab Results':
         navigate('/lab-results')
         toast.success('Navigating to Lab Results')
-break
+        break
       case 'Pharmacy':
         navigate('/pharmacy')
         toast.success('Navigating to Pharmacy Management')
         break
-case 'Reports':
+      case 'Reports':
         navigate('/reports')
         toast.success('Navigating to Reports & Analytics')
         break
@@ -86,6 +94,64 @@ case 'Reports':
         toast.warning('Feature coming soon!')
     }
   }
+
+  // Handle notification click
+  const handleNotificationClick = (notification) => {
+    // Mark as read
+    setNotifications(prev => 
+      prev.map(n => n.id === notification.id ? { ...n, read: true } : n)
+    )
+    
+    // Navigate based on notification type
+    switch (notification.type) {
+      case 'appointment':
+        navigate('/appointments')
+        toast.success('Navigating to Appointments')
+        break
+      case 'lab':
+        navigate('/lab-results')
+        toast.success('Navigating to Lab Results')
+        break
+      case 'emergency':
+        navigate('/emergency')
+        toast.warning('Navigating to Emergency Management')
+        break
+      case 'patient':
+        navigate('/patient-management')
+        toast.success('Navigating to Patient Management')
+        break
+      case 'pharmacy':
+        navigate('/pharmacy')
+        toast.success('Navigating to Pharmacy')
+        break
+      default:
+        toast.info('Notification clicked')
+    }
+    
+    setShowNotifications(false)
+  }
+
+  // Toggle notification dropdown
+  const toggleNotificationDropdown = () => {
+    setShowNotifications(!showNotifications)
+  }
+
+  // Mark notification as read
+  const markAsRead = (notificationId) => {
+    setNotifications(prev => 
+      prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+    )
+    toast.success('Notification marked as read')
+  }
+
+  // Mark all notifications as read
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    toast.success('All notifications marked as read')
+  }
+
+  // Get unread notification count
+  const unreadCount = notifications.filter(n => !n.read).length
 
   const recentActivities = [
     {
@@ -240,9 +306,119 @@ case 'Reports':
                   })}
                 </p>
               </div>
-              <button className="p-2 sm:p-3 rounded-xl bg-surface-100 hover:bg-surface-200 transition-colors">
-                <ApperIcon name="Bell" className="w-5 h-5 sm:w-6 sm:h-6 text-surface-700" />
-              </button>
+{/* Notification Bell with Dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={toggleNotificationDropdown}
+                  className="relative p-2 sm:p-3 rounded-xl bg-surface-100 hover:bg-surface-200 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  <ApperIcon name="Bell" className="w-5 h-5 sm:w-6 sm:h-6 text-surface-700" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                    className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-surface-200 z-50 max-h-96 overflow-y-auto"
+                  >
+                    {/* Dropdown Header */}
+                    <div className="flex items-center justify-between p-4 border-b border-surface-200">
+                      <h3 className="font-semibold text-surface-900">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllAsRead}
+                          className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Notification List */}
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-surface-500">
+                          No notifications
+                        </div>
+                      ) : (
+                        notifications.map((notification) => (
+                          <motion.div
+                            key={notification.id}
+                            whileHover={{ backgroundColor: '#f8fafc' }}
+                            onClick={() => handleNotificationClick(notification)}
+                            className={`p-4 border-b border-surface-100 cursor-pointer transition-colors ${
+                              !notification.read ? 'bg-primary-50/50' : ''
+                            }`}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div className={`p-2 rounded-lg ${
+                                notification.priority === 'urgent' ? 'bg-red-100 text-red-600' :
+                                notification.priority === 'high' ? 'bg-orange-100 text-orange-600' :
+                                'bg-primary-100 text-primary-600'
+                              }`}>
+                                <ApperIcon 
+                                  name={
+                                    notification.type === 'appointment' ? 'Calendar' :
+                                    notification.type === 'lab' ? 'FileText' :
+                                    notification.type === 'emergency' ? 'AlertTriangle' :
+                                    notification.type === 'patient' ? 'Users' :
+                                    'Pill'
+                                  } 
+                                  className="w-4 h-4" 
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <p className="font-medium text-sm text-surface-900 truncate">
+                                    {notification.title}
+                                  </p>
+                                  {!notification.read && (
+                                    <div className="w-2 h-2 bg-primary-500 rounded-full ml-2"></div>
+                                  )}
+                                </div>
+                                <p className="text-sm text-surface-600 truncate mt-1">
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-surface-500 mt-1">
+                                  {notification.time}
+                                </p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))
+                      )}
+                    </div>
+
+                    {/* Dropdown Footer */}
+                    <div className="p-3 border-t border-surface-200">
+                      <button 
+                        onClick={() => {
+                          setShowNotifications(false)
+                          toast.info('View all notifications functionality coming soon')
+                        }}
+                        className="w-full text-center text-sm text-primary-600 hover:text-primary-700 font-medium"
+                      >
+                        View all notifications
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Click outside to close */}
+                {showNotifications && (
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setShowNotifications(false)}
+                  ></div>
+                )}
+              </div>
             </div>
           </div>
         </div>
