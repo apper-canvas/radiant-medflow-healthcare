@@ -629,9 +629,9 @@ const PatientManagement = () => {
                     >
                       Clear Form
                     </button>
-                    <button
+<button
                       type="submit"
-                      className="medical-button-primary"
+                      className="medical-button bg-gradient-to-r from-primary-500 to-primary-600 text-black hover:from-primary-600 hover:to-primary-700 focus:ring-primary-500 shadow-lg hover:shadow-xl"
                     >
                       Register Patient
                     </button>
