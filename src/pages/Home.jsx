@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { toast } from 'react-toastify'
 import MainFeature from '../components/MainFeature'
 import ApperIcon from '../components/ApperIcon'
-
 const Home = () => {
   const navigate = useNavigate()
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -53,7 +53,35 @@ const Home = () => {
       bgColor: 'bg-purple-50',
       borderColor: 'border-purple-200'
     }
-  ]
+]
+
+  // Handle quick action button clicks
+  const handleQuickAction = (actionName) => {
+    switch (actionName) {
+      case 'Add Patient':
+        navigate('/patient-management')
+        toast.success('Navigating to Patient Management')
+        break
+      case 'Schedule':
+        navigate('/appointments')
+        toast.success('Navigating to Appointments')
+        break
+      case 'Emergency':
+        toast.error('Emergency protocol activated! Alert sent to on-call staff.')
+        break
+      case 'Lab Results':
+        toast.info('Lab Results system accessed. Checking for pending results...')
+        break
+      case 'Pharmacy':
+        toast.info('Pharmacy system accessed. Checking medication inventory...')
+        break
+      case 'Reports':
+        toast.info('Reports system accessed. Generating analytics dashboard...')
+        break
+      default:
+        toast.warning('Feature coming soon!')
+    }
+  }
 
   const recentActivities = [
     {
