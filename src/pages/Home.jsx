@@ -139,36 +139,63 @@ case 'Reports':
 </div>
             
             {/* Navigation Buttons */}
-            <nav className="hidden lg:flex items-center space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+{/* Tab Navigation */}
+            <nav className="hidden lg:flex tab-navigation">
+              <div 
                 onClick={() => navigate('/patient-management')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium transition-all duration-200"
+                className={`tab-item ${window.location.pathname === '/patient-management' ? 'tab-item-active' : ''}`}
               >
-                <ApperIcon name="Users" className="w-4 h-4" />
-                <span className="text-sm">Patients</span>
-              </motion.button>
+                <ApperIcon name="Users" className="tab-icon" />
+                <span className="tab-label">Patients</span>
+              </div>
               
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <div 
                 onClick={() => navigate('/appointments')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-secondary-100 hover:bg-secondary-200 text-secondary-700 font-medium transition-all duration-200"
+                className={`tab-item ${window.location.pathname === '/appointments' ? 'tab-item-active' : ''}`}
               >
-                <ApperIcon name="Calendar" className="w-4 h-4" />
-                <span className="text-sm">Appointments</span>
-              </motion.button>
+                <ApperIcon name="Calendar" className="tab-icon" />
+                <span className="tab-label">Appointments</span>
+              </div>
               
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <div 
                 onClick={() => navigate('/billing')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-700 font-medium transition-all duration-200"
+                className={`tab-item ${window.location.pathname === '/billing' ? 'tab-item-active' : ''}`}
               >
-                <ApperIcon name="CreditCard" className="w-4 h-4" />
-                <span className="text-sm">Billing</span>
-              </motion.button>
+                <ApperIcon name="CreditCard" className="tab-icon" />
+                <span className="tab-label">Billing</span>
+              </div>
+              
+              <div 
+                onClick={() => navigate('/emergency')}
+                className={`tab-item ${window.location.pathname === '/emergency' ? 'tab-item-active' : ''}`}
+              >
+                <ApperIcon name="AlertCircle" className="tab-icon" />
+                <span className="tab-label">Emergency</span>
+              </div>
+              
+              <div 
+                onClick={() => navigate('/lab-results')}
+                className={`tab-item ${window.location.pathname === '/lab-results' ? 'tab-item-active' : ''}`}
+              >
+                <ApperIcon name="FileText" className="tab-icon" />
+                <span className="tab-label">Lab Results</span>
+              </div>
+              
+              <div 
+                onClick={() => navigate('/pharmacy')}
+                className={`tab-item ${window.location.pathname === '/pharmacy' ? 'tab-item-active' : ''}`}
+              >
+                <ApperIcon name="Pill" className="tab-icon" />
+                <span className="tab-label">Pharmacy</span>
+              </div>
+              
+              <div 
+                onClick={() => navigate('/reports')}
+                className={`tab-item ${window.location.pathname === '/reports' ? 'tab-item-active' : ''}`}
+              >
+                <ApperIcon name="BarChart3" className="tab-icon" />
+                <span className="tab-label">Reports</span>
+              </div>
             </nav>
             
             <div className="flex items-center space-x-2 sm:space-x-4">
